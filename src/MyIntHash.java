@@ -67,6 +67,10 @@ public class MyIntHash {
 	public MyIntHash(MODE mode, double load_factor) {
 		// TODO Part1: initialize table size, size, mode, and load_factor
 		//             Instantiate hashTable1 and initialize it
+		hashTable1 = new int[INITIAL_SIZE];
+		this.load_factor = load_factor;
+		this.size = INITIAL_SIZE;
+		this.mode = mode;
 	}
 
 	/**
@@ -78,6 +82,7 @@ public class MyIntHash {
 	 */
 	private void initHashTable(int[] hashTable) {
 		// TODO Part1: Write this method 
+		
 	}
 	
 	/**
