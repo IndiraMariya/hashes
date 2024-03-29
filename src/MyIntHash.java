@@ -63,8 +63,21 @@ public class MyIntHash {
 	 *
 	 * @param mode the mode
 	 * @param load_factor the load factor
+	 * @param tableSize - the initial size of the hashTable
+	 */
+	public MyIntHash(MODE mode, double load_factor, int tableSize) {
+		// TODO Part1: initialize table size, size, mode, and load_factor
+		//             Instantiate hashTable1 and initialize it
+	}
+
+	/**
+	 * Instantiates a new my int hash - using INITIAL_SIZE as the tableSize 
+	 *
+	 * @param mode the mode
+	 * @param load_factor the load factor
 	 */
 	public MyIntHash(MODE mode, double load_factor) {
+
 		// TODO Part1: initialize table size, size, mode, and load_factor
 		//             Instantiate hashTable1 and initialize it
 		hashTable1 = new int[INITIAL_SIZE];
@@ -112,7 +125,7 @@ public class MyIntHash {
 		
 		switch (mode) {
 			case Linear : return add_LP(key); 
-			default : return add_LP(key);
+			default : return false;
 		}
 	}
 	
@@ -126,7 +139,7 @@ public class MyIntHash {
 	public boolean contains(int key) {
 		switch (mode) {
 			case Linear : return contains_LP(key); 
-			default : return contains_LP(key);
+			default : return false;
 		}
 	}
 	
@@ -140,7 +153,7 @@ public class MyIntHash {
 	public boolean remove(int key) {
 		switch (mode) {
 			case Linear : return remove_LP(key); 
-			default : return remove_LP(key);
+			default : return false;
 		}
 	}
 	
@@ -296,6 +309,16 @@ public class MyIntHash {
 	public boolean isEmpty() {
 		// TODO Part1: Write this method
 		return true;
+	}
+
+	/**
+	 * return the calculated loading based upon the number of entries, size and number
+	 * of hashTables.
+	 * @return a double representing the loading.
+	 */
+	public double getCurrLoadFactor() {
+		// TODO: write this method
+		return 1.0;
 	}
 
 	/**
