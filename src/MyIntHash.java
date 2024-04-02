@@ -68,6 +68,13 @@ public class MyIntHash {
 	public MyIntHash(MODE mode, double load_factor, int tableSize) {
 		// TODO Part1: initialize table size, size, mode, and load_factor
 		//             Instantiate hashTable1 and initialize it
+		hashTable1 = new int[tableSize];
+		this.load_factor = load_factor;
+		this.size = 0;
+		this.tableSize = tableSize;
+		this.mode = mode;
+
+		initHashTable(hashTable1);
 	}
 
 	/**
@@ -227,9 +234,12 @@ public class MyIntHash {
 	 */
 	private boolean add_LP(int key) {
 		// Part1: Write this function
-		for (int i = hashFx(key); i < tableSize; i++) {
-			if (hashTable1[i] == EMPTY) {
-				hashTable1[i] = key;
+		if (contains(key))
+			return false;
+		
+		for (int i = hashFx(key); i < tableSize + hashFx(key); i++) {
+			if (hashTable1[i%31] == EMPTY) {
+				hashTable1[i%31] = key;
 				size++;
 				return true;
 			}	
@@ -253,10 +263,10 @@ public class MyIntHash {
 	 */
 	private boolean contains_LP(int key) {
 		// Part1: Write this method.
-		for (int i = hashFx(key); i < tableSize; i ++) {
-			if (hashTable1[i] == key)
+		for (int i = hashFx(key); i < (tableSize + hashFx(key)); i++) {
+			if (hashTable1[i%31] == key)
 				return true;
-			else if (hashTable1[i] == EMPTY) // no valid data
+			else if (hashTable1[i%31] == EMPTY) // no valid data
 				return false;
 		}
 		
