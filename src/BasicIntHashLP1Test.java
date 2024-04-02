@@ -316,14 +316,14 @@ class BasicIntHashLP1Test {
 
 	/**
 	 * Basic contains full test. This test is checking to see that running contains()
-	 * on a fulltable hash behave correctly if the hash does NOT contain the key.
+	 * on a full table hash behave correctly if the hash does NOT contain the key.
 	 * 1) completely fill the hash table (no collisions). Ensure that data goes to the correct
 	 *    location and that size grows as expected.
 	 * 2) Check for a non-existant value at each hash table location. Make sure that it returns 
 	 *    false.
 	 */
 	@Test
-	@Order(9)
+	@Order(10)
 	void BasicContainsFull_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #16: Checking contains failures on full table");
@@ -344,6 +344,30 @@ class BasicIntHashLP1Test {
 		}
 	}
 
+	@Test
+	@Order(11)
+	void BasicHashClearLP_test() {
+		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
+		System.out.println("Clear Test #1: Linear Probing Hash");
+		int size = hash.getTableSize();
+		assertEquals(31,size);
+		assertEquals(0,hash.size());
+		assertTrue(hash.isEmpty());
+		for (int i = 0; i < size; i++) {
+			assertTrue(hash.add(i));
+			assertEquals(i, hash.getHashAt(i, 0));
+			assertFalse(hash.isEmpty());
+		}
+		assertEquals(size,hash.getTableSize());
+		
+		hash.clear();
+		assertEquals(0, hash.size());
+		assertTrue(hash.isEmpty());
+		for (int i = 0; i < size; i++) {
+			assertEquals(-1,hash.getHashAt(i, 0));
+		}
+	}
+	
 	void printHash() {
 		System.out.println("Printing HashTable1 (LP):");
 		for (int i =0 ; i < hash.getTableSize(); i++) {

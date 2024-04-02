@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -263,7 +262,7 @@ class BasicIntHashLP2Test {
 	 * removes them in the reverse order. This should leave the entire array filled with EMPTY
 	 */
 	@Test
-	@Order(6)
+	@Order(7)
 	void BasicHashRemoveCollisionB_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #6B: Hash Remove with Collision handling");
@@ -302,7 +301,7 @@ class BasicIntHashLP2Test {
 	 * removes them in the same order. This should leave the entire array filled with REMOVED
 	 */
 	@Test
-	@Order(7)
+	@Order(8)
 	void BasicHashRemoveCollisionAdd_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #7: Hash Remove with Collision handling followed by Add");
@@ -343,10 +342,10 @@ class BasicIntHashLP2Test {
 	/**
 	 * Basic hash Remove Add Dup test. This test fills the hash with conflicting indexes, and then
 	 * removes one of them and tries to add a duplicate item. This should return false. Then
-	 * the original item is readded. This is done for size >> 1 entries.
+	 * the original item is re-added. This is done for size >> 1 entries.
 	 */
 	@Test
-	@Order(27)
+	@Order(9)
 	void BasicHashRemoveAddDuplicate_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #27: Hash Remove followed by duplicate add");
@@ -368,7 +367,7 @@ class BasicIntHashLP2Test {
 	 * Basic hash Remove rand test. Same as test #4, but with randomized data. This is not a comprehensive test.
 	 */
 	@Test
-	@Order(8)
+	@Order(10)
 	void BasicHashRemoveRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		Random random = new Random();
@@ -420,7 +419,7 @@ class BasicIntHashLP2Test {
 	 * exceed the load factor. Uses basic data from 0 to size - 1
 	 */
 	@Test
-	@Order(9)
+	@Order(11)
 	void BasicHashGrow_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,0.75);
 		System.out.println("Basic Test #6: Hash Growth - Exceeding Load Factor ");
@@ -428,10 +427,13 @@ class BasicIntHashLP2Test {
 		assertEquals(31,size);
 		int checkSize = size;
 		for (int i = 0; i < size; i++) {
+			assertEquals(checkSize,hash.getTableSize());
 			assertTrue(hash.add(i));
 			assertEquals(i,hash.getHashAt(i, 0));
 			if ((i+1)/(1.0*checkSize)>0.75) {
-				System.out.println("   Exceeded load factor: "+hash.getLoad_factor()+" size="+hash.size()+"  table size = "+size);
+				System.out.println("   Exceeded load factor: "+hash.getLoad_factor()+" size="+hash.size()+
+						           "  table size = "+size);
+				
 				System.out.println("   New table size is "+hash.getTableSize());
 			    assertFalse(checkSize == hash.getTableSize());
 			    checkSize = hash.getTableSize();
@@ -453,7 +455,7 @@ class BasicIntHashLP2Test {
 	 * exceed the load factor. Uses basic data from 31 to 61
 	 */
 	@Test
-	@Order(9)
+	@Order(12)
 	void BasicHashGrowB_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,0.75);
 		System.out.println("Basic Test #6: Hash GrowthB - Exceeding Load Factor ");
@@ -461,6 +463,7 @@ class BasicIntHashLP2Test {
 		assertEquals(31,size);
 		int checkSize = size;
 		for (int i = 0; i < size; i++) {
+			assertEquals(checkSize,hash.getTableSize());
 			assertTrue(hash.add(i+size));
 			if (hash.getTableSize() == 31) 
 				assertEquals(i+31,hash.getHashAt(i, 0));
@@ -468,7 +471,8 @@ class BasicIntHashLP2Test {
 				assertEquals(i+31,hash.getHashAt(i+31, 0));
 				
 			if ((i+1)/(1.0*checkSize)>0.75) {
-				System.out.println("   Exceeded load factor: "+hash.getLoad_factor()+" size="+hash.size()+"  table size = "+size);
+				System.out.println("   Exceeded load factor: "+hash.getLoad_factor()+" size="+hash.size()+
+						           "  table size = "+size);
 				System.out.println("   New table size is "+hash.getTableSize());
 			    assertFalse(checkSize == hash.getTableSize());
 			    checkSize = hash.getTableSize();
@@ -483,13 +487,54 @@ class BasicIntHashLP2Test {
 		}
 		assertTrue(hash.add(checkSize - 1));  
 		assertEquals(checkSize -1, hash.getHashAt(checkSize-1,0));
-	}	
+	}
+	
+	/**
+	 * Basic hash grow test. Tests to see that the hash grows as expected when the addition of a new value would
+	 * exceed the load factor. Designed so that each of the first 3 adds will grow the hash
+	 */
+	@Test
+	@Order(13)
+	void BasicHashGrowC_test() {
+		hash = new MyIntHash(MyIntHash.MODE.Linear,0.1,5);
+		System.out.println("Basic Test #6: Hash GrowthC - Exceeding Load Factor ");
+		int size=0;
+		assertEquals(5,hash.getTableSize());
+		System.out.println("   Adding 0 to the hash - should grow to 11");
+		hash.add(0);
+		assertEquals(11,hash.getTableSize());
+		for (int i = 0; i < 11; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(1,size);
+		System.out.println("   Adding 1 to the hash - should grow to 23");
+		hash.add(1);
+		assertEquals(23,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 23; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(2,size);
+		System.out.println("   Adding 2 to the hash - should grow to 47");
+		hash.add(2);
+		assertEquals(47,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 47; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(3,size);
+		System.out.println("   Adding 3 to the hash - should stay at 47");
+		hash.add(3);
+		assertEquals(47,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 47; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(4,size);	
+	}
+	
 	/**
 	 * Basic hash grow rand test. Similar to Test 6, but with randomize data - collisions are not prevented, and
 	 * are likely to occur naturally.
 	 */
 	@Test
-	@Order(10)
+	@Order(14)
 	void BasicHashGrowRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,0.75);
 		Random random = new Random();
@@ -513,7 +558,8 @@ class BasicIntHashLP2Test {
 			assertTrue(hash.add(randInts.get(i)));
 			assertTrue(hash.contains(randInts.get(i)));
 			if ((i+1)/(1.0*checkSize)>0.75) {
-				System.out.println("   Exceeded load factor: "+hash.getLoad_factor()+" size="+hash.size()+"  table size = "+size);
+				System.out.println("   Exceeded load factor: "+hash.getLoad_factor()+" size="+hash.size()+
+						           "  table size = "+size);
 				System.out.println("   New table size is "+hash.getTableSize());
 			    assertFalse(checkSize == hash.getTableSize());
 			    checkSize = hash.getTableSize();
@@ -532,7 +578,7 @@ class BasicIntHashLP2Test {
 	 * Review the Remove Scenarios covered in class
 	 */
 	@Test
-	@Order(17)
+	@Order(15)
 	void DebugHashRemoveCollision_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test: Hash Remove with Collision handling - wrap around");
@@ -572,7 +618,7 @@ class BasicIntHashLP2Test {
 	 * Variant of test 17 - testing correct Remove when data wraps
 	 */
 	@Test
-	@Order(18)
+	@Order(16)
 	void DebugHashRemoveCollision2_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test: Hash Remove with Collision handling - wrap around");
@@ -609,36 +655,6 @@ class BasicIntHashLP2Test {
 		
 	}
 	
-	/**
-	 * Basic hash func test. Tests the basic functionality of the clear LP hash function
-	 * by adding keys from 0 to size -1 of the hash. Tests that entries are where 
-	 * they should be. No collisions. Then tests clear to show that the full array is cleared
-	 */
-	@Test
-	@Order(19)
-	void BasicHashClearLP_test() {
-		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Clear Test: Linear Probing Hash");
-		int size = hash.getTableSize();
-		assertEquals(31,size);
-		assertEquals(0,hash.size());
-		assertTrue(hash.isEmpty());
-		for (int i = 0; i < size; i++) {
-			assertTrue(hash.add(i));
-			assertEquals(i, hash.getHashAt(i, 0));
-			assertFalse(hash.isEmpty());
-		}
-		assertEquals(size,hash.getTableSize());
-		
-		hash.clear();
-		assertEquals(0, hash.size());
-		assertTrue(hash.isEmpty());
-		for (int i = 0; i < size; i++) {
-			assertEquals(-1,hash.getHashAt(i, 0));
-		}
-	}
-	
-
 	void printHash() {
 		System.out.println("Printing HashTable1 (LP):");
 		for (int i =0 ; i < hash.getTableSize(); i++) {
