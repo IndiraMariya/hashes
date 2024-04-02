@@ -77,13 +77,15 @@ public class MyIntHash {
 	 * @param load_factor the load factor
 	 */
 	public MyIntHash(MODE mode, double load_factor) {
-
-		// TODO Part1: initialize table size, size, mode, and load_factor
+// Part1: initialize table size, size, mode, and load_factor
 		//             Instantiate hashTable1 and initialize it
 		hashTable1 = new int[INITIAL_SIZE];
 		this.load_factor = load_factor;
-		this.size = INITIAL_SIZE;
+		this.size = 0;
+		this.tableSize = INITIAL_SIZE;
 		this.mode = mode;
+
+		initHashTable(hashTable1);
 	}
 
 	/**
@@ -94,8 +96,11 @@ public class MyIntHash {
 	 * @param hashTable the hash table
 	 */
 	private void initHashTable(int[] hashTable) {
-		// TODO Part1: Write this method 
-		
+		// Part1: Write this method 
+		for (int i = 0; i < tableSize; i ++) {
+			hashTable[i] = EMPTY;
+		}
+		size = 0;
 	}
 	
 	/**
@@ -105,8 +110,8 @@ public class MyIntHash {
 	 * @return the int
 	 */
 	private int hashFx(int key) {
-		// TODO Part1: Write this method.
-		return -1;
+		// Part1: Write this method.
+		return key%31;
 	}
 	
 	/**
@@ -221,7 +226,14 @@ public class MyIntHash {
 	 * @return true, if successful
 	 */
 	private boolean add_LP(int key) {
-		// TODO Part1: Write this function
+		// Part1: Write this function
+		for (int i = hashFx(key); i < tableSize; i++) {
+			if (hashTable1[i] == EMPTY) {
+				hashTable1[i] = key;
+				size++;
+				return true;
+			}	
+		}
 		return false;
 	}
 	
@@ -240,7 +252,14 @@ public class MyIntHash {
 	 * @return true, if successful
 	 */
 	private boolean contains_LP(int key) {
-		// TODO Part1: Write this method.
+		// Part1: Write this method.
+		for (int i = hashFx(key); i < tableSize; i ++) {
+			if (hashTable1[i] == key)
+				return true;
+			else if (hashTable1[i] == EMPTY) // no valid data
+				return false;
+		}
+		
 		return false;
 	}
 	
@@ -278,7 +297,7 @@ public class MyIntHash {
 		// TODO Part1: as you code this project, you will add different cases. 
 		//             for now, complete the case for Linear Probing
 		switch (mode) {
-		//case Linear : return // What needs to go here??? write this and uncomment
+		case Linear : return hashTable1[index+offset];// What needs to go here??? write this and uncomment
 		}
 		return -1;
 	}
@@ -289,8 +308,8 @@ public class MyIntHash {
 	 * @return size
 	 */
 	public int size() {
-		// TODO Part1: Write this method
-		return -1;
+		// Part1: Write this method
+		return size;
 	}
 
 	/**
@@ -298,7 +317,8 @@ public class MyIntHash {
 	 *
 	 */
 	public void clear() {
-		// TODO Part1: Write this method
+		// Part1: Write this method
+		initHashTable(hashTable1);
 	}
 
 	/**
@@ -307,7 +327,11 @@ public class MyIntHash {
 	 * @return ????
 	 */
 	public boolean isEmpty() {
-		// TODO Part1: Write this method
+		// Part1: Write this method
+		for (int i = 0; i < tableSize; i ++) {
+			if (hashTable1[i] != EMPTY)
+				return false;
+		}
 		return true;
 	}
 
