@@ -489,6 +489,7 @@ class BasicIntHashQPTest {
 				System.out.println("   New table size is "+hash.getTableSize());
 			    assertFalse(checkSize == hash.getTableSize());
 			    checkSize = hash.getTableSize();
+			    assertEquals(67,checkSize);
 			    for (int j = 0; j < i; j++) {
 			    	assertTrue(hash.contains(j));
 			    }
@@ -574,6 +575,7 @@ class BasicIntHashQPTest {
 			    assertFalse(checkSize == hash.getTableSize());
 			    printValidHash();
 			    checkSize = hash.getTableSize();
+			    assertEquals(67,checkSize);
 			    for (int j = 0; j <i; j++) {
 			    	System.out.println("Checking hash contents after growth - looking for key: "+randInts.get(j));    		
 			    	assertTrue(hash.contains(randInts.get(j)));
@@ -619,6 +621,7 @@ class BasicIntHashQPTest {
 				System.out.println("   New table size is "+hash.getTableSize());
 			    assertFalse(checkSize == hash.getTableSize());
 			    checkSize = hash.getTableSize();
+			    assertEquals(67,checkSize);
 			    for (int j = 0; j < i; j++) {
 			    	System.out.println("Checking hash contents after growth - looking for key: "+qpInit[j]);
 			    	assertTrue(hash.contains(qpInit[j]));

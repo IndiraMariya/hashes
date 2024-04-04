@@ -437,6 +437,7 @@ class BasicIntHashLP2Test {
 				System.out.println("   New table size is "+hash.getTableSize());
 			    assertFalse(checkSize == hash.getTableSize());
 			    checkSize = hash.getTableSize();
+			    assertEquals(67,checkSize);
 			    for (int j = 0; j < i; j++) {
 			    	assertTrue(hash.contains(j));
 			    }
@@ -476,6 +477,7 @@ class BasicIntHashLP2Test {
 				System.out.println("   New table size is "+hash.getTableSize());
 			    assertFalse(checkSize == hash.getTableSize());
 			    checkSize = hash.getTableSize();
+			    assertEquals(67,checkSize);
 			    for (int j = 0; j < i; j++) {
 			    	assertTrue(hash.contains(j+31));
 			    }
@@ -563,6 +565,7 @@ class BasicIntHashLP2Test {
 				System.out.println("   New table size is "+hash.getTableSize());
 			    assertFalse(checkSize == hash.getTableSize());
 			    checkSize = hash.getTableSize();
+			    assertEquals(67,checkSize);
 			    for (int j = 0; j <i; j++) {
 			    	assertTrue(hash.contains(randInts.get(j)));
 			    }
