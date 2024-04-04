@@ -66,7 +66,7 @@ public class MyIntHash {
 	 * @param tableSize - the initial size of the hashTable
 	 */
 	public MyIntHash(MODE mode, double load_factor, int tableSize) {
-		// TODO Part1: initialize table size, size, mode, and load_factor
+		// Part1: initialize table size, size, mode, and load_factor
 		//             Instantiate hashTable1 and initialize it
 		hashTable1 = new int[tableSize];
 		this.load_factor = load_factor;
@@ -118,7 +118,7 @@ public class MyIntHash {
 	 */
 	private int hashFx(int key) {
 		// Part1: Write this method.
-		return key%31;
+		return key%tableSize;
 	}
 	
 	/**
@@ -134,9 +134,14 @@ public class MyIntHash {
 		// TODO: Part2 - if adding this key would cause the the hash load to exceed the load_factor, grow the hash.
 		//      Note that you cannot just use size in the numerator... 
 		//      Write the code to implement this check and call growHash() if required (no parameters)
+
+		if (((double)(size+1)/(double)tableSize) > load_factor) {
+			growHash();
+		}
 		
 		switch (mode) {
 			case Linear : return add_LP(key); 
+//			case Quadratic : return add_QP(key); 
 			default : return false;
 		}
 	}
@@ -150,7 +155,7 @@ public class MyIntHash {
 	 */
 	public boolean contains(int key) {
 		switch (mode) {
-			case Linear : return contains_LP(key); 
+			case Linear : return contains_LP(key);
 			default : return false;
 		}
 	}
@@ -165,6 +170,7 @@ public class MyIntHash {
 	public boolean remove(int key) {
 		switch (mode) {
 			case Linear : return remove_LP(key); 
+//			case Quadratic : return remove_QP(key); 
 			default : return false;
 		}
 	}
@@ -194,7 +200,23 @@ public class MyIntHash {
 	 * @param newSize the new size
 	 */
 	private void growHash(int[] table, int newSize) {
-		// TODO Part2:  Write this method
+		// Part2:  Write this method
+		table = hashTable1;
+		hashTable1 = new int[newSize];
+		int curSize = this.size;
+		this.tableSize=newSize;
+		initHashTable(hashTable1);
+		this.size = curSize;
+		
+		for (int i = 0; i < table.length; i ++) {
+			if (table[i] != EMPTY && table[i] != REMOVED) {
+				hashTable1[hashFx(table[i])] = table[i];
+			} else {
+				continue;
+			}
+				
+		}
+		
 	}
 	
 	/**
@@ -205,8 +227,12 @@ public class MyIntHash {
 	 * @return the new table size
 	 */
 	private int getNewTableSize(int startSize) {
-		// TODO Part2: Write this method
-		return -1;
+		// Part2: Write this method
+		int newSize = (startSize*2)+1;
+		while(!isPrime(newSize)) {
+			newSize++;
+		}
+		return newSize;
 	}
 	
 	/**
@@ -216,8 +242,13 @@ public class MyIntHash {
 	 * @return true, if is prime
 	 */
 	private boolean isPrime(int size) {
-		// TODO Part2: Write this method
-		return false;
+		// Part2: Write this method
+		for (int i =1; i < 10; i ++) {
+			if (i%size == 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -238,8 +269,8 @@ public class MyIntHash {
 			return false;
 		
 		for (int i = hashFx(key); i < tableSize + hashFx(key); i++) {
-			if (hashTable1[i%31] == EMPTY) {
-				hashTable1[i%31] = key;
+			if (hashTable1[i%tableSize] == EMPTY || hashTable1[i%tableSize] == REMOVED) {
+				hashTable1[i%tableSize] = key;
 				size++;
 				return true;
 			}	
@@ -264,10 +295,8 @@ public class MyIntHash {
 	private boolean contains_LP(int key) {
 		// Part1: Write this method.
 		for (int i = hashFx(key); i < (tableSize + hashFx(key)); i++) {
-			if (hashTable1[i%31] == key)
+			if (hashTable1[i%tableSize] == key)
 				return true;
-			else if (hashTable1[i%31] == EMPTY) // no valid data
-				return false;
 		}
 		
 		return false;
@@ -289,7 +318,19 @@ public class MyIntHash {
 	 * @return true, if successful
 	 */
 	private boolean remove_LP(int key) {
-		// TODO Part2: Write this function
+		// Part2: Write this function
+		for (int i = hashFx(key); i < tableSize + hashFx(key); i++) {
+			if (hashTable1[i%tableSize] == key) {
+				if ((hashTable1[(i+1)%tableSize] == EMPTY)) {
+					hashTable1[i%tableSize] = EMPTY;
+
+				} else {
+					hashTable1[i%tableSize] = REMOVED;
+				}
+				size--;
+				return true;
+			}
+		}
 		return false;		
 	}
 		
@@ -307,7 +348,7 @@ public class MyIntHash {
 		// TODO Part1: as you code this project, you will add different cases. 
 		//             for now, complete the case for Linear Probing
 		switch (mode) {
-		case Linear : return hashTable1[index+offset];// What needs to go here??? write this and uncomment
+		case Linear : return hashTable1[index+offset];
 		}
 		return -1;
 	}
@@ -351,8 +392,8 @@ public class MyIntHash {
 	 * @return a double representing the loading.
 	 */
 	public double getCurrLoadFactor() {
-		// TODO: write this method
-		return 1.0;
+		// write this method
+		return (double)size / (double)tableSize;
 	}
 
 	/**
