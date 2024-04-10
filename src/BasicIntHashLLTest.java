@@ -23,12 +23,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 class BasicIntHashLLTest {
 	private MyIntHash hash;
 	private final boolean DEBUG = false;
+	
 	/**
 	 * Sets the up before class.
 	 *
 	 * @throws Exception the exception
 	 */
-	
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 	}
@@ -65,7 +65,7 @@ class BasicIntHashLLTest {
 	 */
 	@Test
 	@Order(1)
-	void BasicInit_test() {
+	void LLBasicInit_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
 		System.out.println("Basic Test #1: Hash Table Initialization");
 		int size = hash.getTableSize();
@@ -81,7 +81,7 @@ class BasicIntHashLLTest {
 	 */
 	@Test
 	@Order(2)
-	void BasicHashFunc_test() {
+	void LLBasicHashFunc_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
 		System.out.println("Basic Test #2: Hash Function ");
 		int size = hash.getTableSize();
@@ -101,7 +101,7 @@ class BasicIntHashLLTest {
 	 */
 	@Test
 	@Order(3)
-	void BasicHashFuncRand_test() {
+	void LLBasicHashFuncRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
 		Random random = new Random();
 		System.out.println("Basic Test #3: Hash Function - Randomized");
@@ -132,7 +132,7 @@ class BasicIntHashLLTest {
 	 */
 	@Test
 	@Order(4)
-	void BasicHashContains_test() {
+	void LLBasicHashContains_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
 		System.out.println("Basic Test #4: Hash contains method");
 		int size = hash.getTableSize();
@@ -155,10 +155,10 @@ class BasicIntHashLLTest {
 	 */
 	@Test
 	@Order(5)
-	void BasicHashContainsRand_test() {
+	void LLBasicHashContainsRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
 		Random random = new Random();
-		System.out.println("Basic Test #3: Hash Function - Randomized");
+		System.out.println("Basic Test #5: Hash Function - Randomized");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int[] rndBasePlusIndex = new int[size];
@@ -187,7 +187,7 @@ class BasicIntHashLLTest {
 	 */
 	@Test
 	@Order(6)
-	void BasicHashCollision_test() {
+	void LLBasicHashCollision_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
 		System.out.println("Basic Test #6: Hash Collision handling method");
 		int size = hash.getTableSize();
@@ -213,7 +213,7 @@ class BasicIntHashLLTest {
 	 */
 	@Test
 	@Order(7)
-	void BasicHashCollisionRand_test() {
+	void LLBasicHashCollisionRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
 		Random random = new Random();
 		System.out.println("Basic Test #7: Hash Collision handling - Randomized");
@@ -251,7 +251,7 @@ class BasicIntHashLLTest {
 	 */
 	@Test
 	@Order(8)
-	void BasicHashRemoveNoCollisions_test() {
+	void LLBasicHashRemoveNoCollisions_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
 		System.out.println("Basic Test #8: Hash Remove no collisions handling method");
 		int size = hash.getTableSize();
@@ -277,7 +277,7 @@ class BasicIntHashLLTest {
 	 */
 	@Test
 	@Order(9)
-	void BasicHashRandRemoveNoCollisions_test() {
+	void LLBasicHashRandRemoveNoCollisions_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
 		Random random = new Random();
 		System.out.println("Basic Test #9: Hash Remove no collisions handling method- randomized");
@@ -320,9 +320,9 @@ class BasicIntHashLLTest {
 	 */
 	@Test
 	@Order(10)
-	void BasicHashRemoveCollision_test() {
+	void LLBasicHashRemoveCollision_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
-		System.out.println("Basic Test #11: Hash Remove with Collision handling");
+		System.out.println("Basic Test #10: Hash Remove with Collision handling");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int stIndex = 3;
@@ -353,10 +353,10 @@ class BasicIntHashLLTest {
 	 * exceed the load factor. Designed so that each of the first 3 adds will grow the hash
 	 */
 	@Test
-	@Order(9)
-	void BasicHashGrowC_test() {
+	@Order(11)
+	void LLBasicHashGrowC_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,0.1,5);
-		System.out.println("Basic Test #6: Hash GrowthC - Exceeding Load Factor ");
+		System.out.println("Basic Test #11: Hash GrowthC - Exceeding Load Factor ");
 		int size=0;
 		assertEquals(5,hash.getTableSize());
 		System.out.println("   Adding 0 to the hash - should grow to 11");
@@ -405,11 +405,11 @@ class BasicIntHashLLTest {
 	 * the list. When all elements are removed, make sure that the LinkedList pointer at rndIndex is set to null
 	 */
 	@Test
-	@Order(11)
-	void BasicHashRemoveRand_test() {
+	@Order(12)
+	void LLBasicHashRemoveRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
 		Random random = new Random();
-		System.out.println("Basic Test #11: Hash Remove with Collision handling - Randomized");
+		System.out.println("Basic Test #12: Hash Remove with Collision handling - Randomized");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		ArrayList<Integer> randInts = new ArrayList<Integer>();
@@ -454,10 +454,10 @@ class BasicIntHashLLTest {
 	 * the original item is re-added. This is done for size >> 1 entries.
 	 */
 	@Test
-	@Order(11)
-	void BasicHashRemoveAddDuplicate_test() {
+	@Order(13)
+	void LLBasicHashRemoveAddDuplicate_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
-		System.out.println("Basic Test #11: Hash Remove followed by duplicate add");
+		System.out.println("Basic Test #13: Hash Remove followed by duplicate add");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int stIndex = 0;
@@ -480,10 +480,10 @@ class BasicIntHashLLTest {
 	 * exceed the load factor. Uses basic data from 0 to size-1
 	 */
 	@Test
-	@Order(12)
-	void BasicHashGrow_test() {
+	@Order(14)
+	void LLBasicHashGrow_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,0.75);
-		System.out.println("Basic Test #12: Hash Growth - Exceeding Load Factor ");
+		System.out.println("Basic Test #14: Hash Growth - Exceeding Load Factor ");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int checkSize = size;
@@ -511,11 +511,11 @@ class BasicIntHashLLTest {
 	 * are likely to occur naturally.
 	 */
 	@Test
-	@Order(13)
-	void BasicHashGrowRand_test() {
+	@Order(15)
+	void LLBasicHashGrowRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,0.75);
 		Random random = new Random();
-		System.out.println("Basic Test #3: Hash Function - Randomized");
+		System.out.println("Basic Test #15: Hash Function - Randomized");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		
@@ -556,10 +556,10 @@ class BasicIntHashLLTest {
 	 *    add does NOT fail and that size (# of elements in the hash) is increases.
 	 */
 	@Test
-	@Order(14)
-	void BasicAddFull_test() {
+	@Order(16)
+	void LLBasicAddFull_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,2.1);
-		System.out.println("Basic Test #14: Add Does not fail due to full table");
+		System.out.println("Basic Test #16: Add Does not fail due to full table");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		for (int i = 0; i < size; i++) { 
@@ -587,10 +587,10 @@ class BasicIntHashLLTest {
 	 *    add fails and that size (# of elements in the hash) is unchanged.
 	 */
 	@Test
-	@Order(15)
-	void BasicAddDup_test() {
+	@Order(17)
+	void LLBasicAddDup_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
-		System.out.println("Basic Test #15: Duplicate add behavior...");
+		System.out.println("Basic Test #17: Duplicate add behavior...");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		for (int i = 0; i < size; i++) { 
@@ -621,10 +621,10 @@ class BasicIntHashLLTest {
 	 * tests.
 	 */
 	@Test
-	@Order(16)
-	void BasicContainsFull_test() {
+	@Order(18)
+	void LLBasicContainsFull_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
-		System.out.println("Basic Test #16: Checking contains failures on full table");
+		System.out.println("Basic Test #18: Checking contains failures on full table");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		for (int i = 0; i < size; i++) { 
@@ -647,10 +647,10 @@ class BasicIntHashLLTest {
 	 * they should be. No collisions. Then tests clear to show that the full array is cleared
 	 */
 	@Test
-	@Order(17)
-	void BasicHashClearLL_test() {
+	@Order(19)
+	void LLBasicHashClear_test() {
 		hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1);
-		System.out.println("Clear Test: LinkedList Hash");
+		System.out.println("Basic Test #19: Clear LinkedList Hash");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		assertEquals(0,hash.size());
@@ -671,6 +671,10 @@ class BasicIntHashLLTest {
 	}
 
 
+	/**
+	 * Prints the contents of HashTableLL
+	 * 
+	 */
 	void printHash() {
 		System.out.println("Printing HashTable LinkedList:");
 		for (int i =0 ; i < hash.getTableSize(); i++) {

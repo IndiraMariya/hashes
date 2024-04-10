@@ -70,9 +70,9 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(1)
-	void BasicHashRemove0_test() {
+	void LPBasicHashRemove0_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Basic Test #8: Hash Remove no collisions handling method");
+		System.out.println("Basic Test #1: Hash Remove no collisions handling method");
 		int size = hash.getTableSize();
 		hash.add(0);
 		hash.add(30);
@@ -102,7 +102,7 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(2)
-	void BasicHashRemoveNoCollisions_test() {
+	void LPBasicHashRemoveNoCollisions_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #2: Hash Remove no collisions handling method");
 		int size = hash.getTableSize();
@@ -129,7 +129,7 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(3)
-	void BasicHashRemoveNoCollisionsEmpty_test() {
+	void LPBasicHashRemoveNoCollisionsEmpty_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #3: Hash Remove no collisions handling method but marked as EMPTY");
 		int size = hash.getTableSize();
@@ -154,7 +154,7 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(4)
-	void BasicHashRemoveNoCollisionsAdd_test() {
+	void LPBasicHashRemoveNoCollisionsAdd_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #4: Hash Remove no collisions handling method followed by add of same data");
 		int size = hash.getTableSize();
@@ -183,7 +183,7 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(5)
-	void BasicHashRandRemoveNoCollisions_test() {
+	void LPBasicHashRandRemoveNoCollisions_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		Random random = new Random();
 		System.out.println("Basic Test #5: Hash Remove no collisions handling method- randomized");
@@ -223,7 +223,7 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(6)
-	void BasicHashRemoveCollision_test() {
+	void LPBasicHashRemoveCollision_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #6: Hash Remove with Collision handling");
 		int size = hash.getTableSize();
@@ -263,9 +263,9 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(7)
-	void BasicHashRemoveCollisionB_test() {
+	void LPBasicHashRemoveCollisionB_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Basic Test #6B: Hash Remove with Collision handling");
+		System.out.println("Basic Test #7: Hash Remove with Collision handling");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int stIndex = 3;
@@ -302,9 +302,9 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(8)
-	void BasicHashRemoveCollisionAdd_test() {
+	void LPBasicHashRemoveCollisionAdd_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Basic Test #7: Hash Remove with Collision handling followed by Add");
+		System.out.println("Basic Test #8: Hash Remove with Collision handling followed by Add");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int stIndex = 3;
@@ -346,9 +346,9 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(9)
-	void BasicHashRemoveAddDuplicate_test() {
+	void LPBasicHashRemoveAddDuplicate_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Basic Test #27: Hash Remove followed by duplicate add");
+		System.out.println("Basic Test #9: Hash Remove followed by duplicate add");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int stIndex = 0;
@@ -368,10 +368,10 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(10)
-	void BasicHashRemoveRand_test() {
+	void LPBasicHashRemoveRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		Random random = new Random();
-		System.out.println("Basic Test #5: Hash Remove with Collision handling - Randomized");
+		System.out.println("Basic Test #10: Hash Remove with Collision handling - Randomized");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		ArrayList<Integer> randInts = new ArrayList<Integer>();
@@ -420,9 +420,9 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(11)
-	void BasicHashGrow_test() {
+	void LPBasicHashGrow_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,0.75);
-		System.out.println("Basic Test #6: Hash Growth - Exceeding Load Factor ");
+		System.out.println("Basic Test #11: Hash Growth - Exceeding Load Factor ");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int checkSize = size;
@@ -457,9 +457,9 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(12)
-	void BasicHashGrowB_test() {
+	void LPBasicHashGrowB_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,0.75);
-		System.out.println("Basic Test #6: Hash GrowthB - Exceeding Load Factor ");
+		System.out.println("Basic Test #12: Hash GrowthB - Exceeding Load Factor ");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int checkSize = size;
@@ -497,9 +497,9 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(13)
-	void BasicHashGrowC_test() {
+	void LPBasicHashGrowC_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,0.1,5);
-		System.out.println("Basic Test #6: Hash GrowthC - Exceeding Load Factor ");
+		System.out.println("Basic Test #13: Hash GrowthC - Exceeding Load Factor ");
 		int size=0;
 		assertEquals(5,hash.getTableSize());
 		System.out.println("   Adding 0 to the hash - should grow to 11");
@@ -537,10 +537,10 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(14)
-	void BasicHashGrowRand_test() {
+	void LPBasicHashGrowRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,0.75);
 		Random random = new Random();
-		System.out.println("Basic Test #7: Hash Function - Randomized");
+		System.out.println("Basic Test #14: Hash Function - Randomized");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		
@@ -582,9 +582,9 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(15)
-	void DebugHashRemoveCollision_test() {
+	void LPDebugHashRemoveCollision_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Basic Test: Hash Remove with Collision handling - wrap around");
+		System.out.println("Basic Test #15: Hash Remove with Collision handling - wrap around");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 
@@ -622,9 +622,9 @@ class BasicIntHashLP2Test {
 	 */
 	@Test
 	@Order(16)
-	void DebugHashRemoveCollision2_test() {
+	void LPDebugHashRemoveCollision2_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Basic Test: Hash Remove with Collision handling - wrap around");
+		System.out.println("Basic Test #16: Hash Remove with Collision handling - wrap around");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 
@@ -658,6 +658,10 @@ class BasicIntHashLP2Test {
 		
 	}
 	
+	/**
+	 * Prints the contents of HashTable1
+	 * 
+	 */
 	void printHash() {
 		System.out.println("Printing HashTable1 (LP):");
 		for (int i =0 ; i < hash.getTableSize(); i++) {

@@ -64,7 +64,7 @@ class BasicIntHashLP1Test {
 	 */
 	@Test
 	@Order(1)
-	void BasicInit_test() {
+	void LPBasicInit_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #1: Hash Table Initialization");
 		int size = hash.getTableSize();
@@ -80,7 +80,7 @@ class BasicIntHashLP1Test {
 	 */
 	@Test
 	@Order(2)
-	void BasicHashFunc_test() {
+	void LPBasicHashFunc_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #2: Hash Function ");
 		int size = hash.getTableSize();
@@ -110,7 +110,7 @@ class BasicIntHashLP1Test {
 	 */
 	@Test
 	@Order(3)
-	void BasicHashFuncRand_test() {
+	void LPBasicHashFuncRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		Random random = new Random();
 		System.out.println("Basic Test #3: Hash Function - Randomized");
@@ -120,7 +120,8 @@ class BasicIntHashLP1Test {
 		System.out.println("   Generating key: (random base * table size) + index");
 		for (int i = 0; i < size; i++ ) {
 			rndBasePlusIndex[i] = random.nextInt(1024)*size+i;
-			System.out.println("   Index = "+i+"  key = "+rndBasePlusIndex[i]+"   hash index = "+(rndBasePlusIndex[i]%size));
+			System.out.println("   Index = "+i+"  key = "+rndBasePlusIndex[i]+"   hash index = "
+			                   +(rndBasePlusIndex[i]%size));
 		}
 		for (int i = 0; i < size; i++) {
 			assertTrue(hash.add(rndBasePlusIndex[i]));
@@ -140,7 +141,7 @@ class BasicIntHashLP1Test {
 	 */
 	@Test
 	@Order(4)
-	void BasicHashContains_test() {
+	void LPBasicHashContains_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #4: Hash contains method");
 		int size = hash.getTableSize();
@@ -163,17 +164,18 @@ class BasicIntHashLP1Test {
 	 */
 	@Test
 	@Order(5)
-	void BasicHashContainsRand_test() {
+	void LPBasicHashContainsRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		Random random = new Random();
-		System.out.println("Basic Test #3: Hash Function - Randomized");
+		System.out.println("Basic Test #5: Hash Function - Randomized");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int[] rndBasePlusIndex = new int[size];
 		System.out.println("   Generating key: (random base * table size) + index");
 		for (int i = 0; i < size; i++ ) {
 			rndBasePlusIndex[i] = random.nextInt(1024)*size+i;
-			System.out.println("   Index = "+i+"  key = "+rndBasePlusIndex[i]+"   hash index = "+(rndBasePlusIndex[i]%size));
+			System.out.println("   Index = "+i+"  key = "+rndBasePlusIndex[i]+"   hash index = "
+			                   +(rndBasePlusIndex[i]%size));
 		}
 		for (int i = 0; i < size; i++) {
 			System.out.println("   Before Add: Checking that hash does not contain "+rndBasePlusIndex[i]);
@@ -194,7 +196,7 @@ class BasicIntHashLP1Test {
 	 */
 	@Test
 	@Order(6)
-	void BasicHashCollision_test() {
+	void LPBasicHashCollision_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		System.out.println("Basic Test #6: Hash Collision handling method");
 		int size = hash.getTableSize();
@@ -219,7 +221,7 @@ class BasicIntHashLP1Test {
 	 */
 	@Test
 	@Order(7)
-	void BasicHashCollisionRand_test() {
+	void LPBasicHashCollisionRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
 		Random random = new Random();
 		System.out.println("Basic Test #7: Hash Collision handling - Randomized");
@@ -262,9 +264,9 @@ class BasicIntHashLP1Test {
 	 */
 	@Test
 	@Order(8)
-	void BasicAddFull_test() {
+	void LPBasicAddFull_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Basic Test #14: Add Failures due to full table");
+		System.out.println("Basic Test #8: Add Failures due to full table");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		for (int i = 0; i < size; i++) { 
@@ -293,9 +295,9 @@ class BasicIntHashLP1Test {
 	 */
 	@Test
 	@Order(9)
-	void BasicAddDup_test() {
+	void LPBasicAddDup_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Basic Test #15: Duplicate add behavior...");
+		System.out.println("Basic Test #9: Duplicate add behavior...");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		for (int i = 0; i < (size-1); i++) { 
@@ -324,9 +326,9 @@ class BasicIntHashLP1Test {
 	 */
 	@Test
 	@Order(10)
-	void BasicContainsFull_test() {
+	void LPBasicContainsFull_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Basic Test #16: Checking contains failures on full table");
+		System.out.println("Basic Test #10: Checking contains failures on full table");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		for (int i = 0; i < size; i++) { 
@@ -344,11 +346,16 @@ class BasicIntHashLP1Test {
 		}
 	}
 
+	/**
+	 * Basic hash func test. Tests the basic functionality of the clear LP hash function
+	 * by adding keys from 0 to size -1 of the hash. Tests that entries are where 
+	 * they should be. No collisions. Then tests clear to show that the full array is cleared
+	 */
 	@Test
 	@Order(11)
-	void BasicHashClearLP_test() {
+	void LPBasicHashClear_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
-		System.out.println("Clear Test #1: Linear Probing Hash");
+		System.out.println("Basic Test #11: Clear Linear Probing Hash");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		assertEquals(0,hash.size());
@@ -368,6 +375,10 @@ class BasicIntHashLP1Test {
 		}
 	}
 	
+	/**
+	 * Prints the contents of HashTable1
+	 * 
+	 */
 	void printHash() {
 		System.out.println("Printing HashTable1 (LP):");
 		for (int i =0 ; i < hash.getTableSize(); i++) {

@@ -66,7 +66,7 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(1)
-	void BasicInit_test() {
+	void QPBasicInit_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
 		System.out.println("Basic Test #1: Hash Table Initialization");
 		int size = hash.getTableSize();
@@ -82,7 +82,7 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(2)
-	void BasicHashFunc_test() {
+	void QPBasicHashFunc_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
 		System.out.println("Basic Test #2: Hash Function ");
 		int size = hash.getTableSize();
@@ -102,7 +102,7 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(3)
-	void BasicHashFuncRand_test() {
+	void QPBasicHashFuncRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
 		Random random = new Random();
 		System.out.println("Basic Test #3: Hash Function - Randomized");
@@ -133,7 +133,7 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(4)
-	void BasicHashContains_test() {
+	void QPBasicHashContains_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
 		System.out.println("Basic Test #4: Hash contains method");
 		int size = hash.getTableSize();
@@ -156,10 +156,10 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(5)
-	void BasicHashContainsRand_test() {
+	void QPBasicHashContainsRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
 		Random random = new Random();
-		System.out.println("Basic Test #3: Hash Function - Randomized");
+		System.out.println("Basic Test #5: Hash Function - Randomized");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int[] rndBasePlusIndex = new int[size];
@@ -188,7 +188,7 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(6)
-	void BasicHashCollision_test() {
+	void QPBasicHashCollision_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
 		System.out.println("Basic Test #6: Hash Collision handling method");
 		int size = hash.getTableSize();
@@ -214,7 +214,7 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(7)
-	void BasicHashCollisionRand_test() {
+	void QPBasicHashCollisionRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
 		Random random = new Random();
 		System.out.println("Basic Test #7: Hash Collision handling - Randomized");
@@ -251,7 +251,7 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(8)
-	void BasicHashRemoveNoCollisions_test() {
+	void QPBasicHashRemoveNoCollisions_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
 		System.out.println("Basic Test #8: Hash Remove no collisions handling method");
 		int size = hash.getTableSize();
@@ -283,14 +283,15 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(9)
-	void BasicHashRemoveCollisionsA_test() {
+	void QPBasicHashRemoveCollisionsA_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
 		System.out.println("Basic Test #9: Hash Remove with collisions handling method - remove in order");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int index = 3;
 		int[]  expData = new int[size];
-		for (int i = 0; i < size; i++) expData[i] = -1;
+		for (int i = 0; i < size; i++) 
+			expData[i] = -1;
 		// initialize the hash 
 		for (int i = 0; i < size/2; i++) {
 			int key = i*size + index;
@@ -318,7 +319,8 @@ class BasicIntHashQPTest {
 			assertEquals(numElements,hash.size());
 			expData[(index+i*i)%size]=-2;
 			System.out.println("   After remove:  Checking hash contents");
-			for (int j = 0; j < size; j++) assertEquals(expData[j],hash.getHashAt(j, 0));
+			for (int j = 0; j < size; j++) 
+				assertEquals(expData[j],hash.getHashAt(j, 0));
 		}	
 		if (DEBUG) printHash();
 	}
@@ -332,14 +334,15 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(10)
-	void BasicHashRemoveCollisionsB_test() {
+	void QPBasicHashRemoveCollisionsB_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
 		System.out.println("Basic Test #10: Hash Remove with collisions handling method - remove in reverse order");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int index = 3;
 		int[]  expData = new int[size];
-		for (int i = 0; i < size; i++) expData[i] = -1;
+		for (int i = 0; i < size; i++) 
+			expData[i] = -1;
 		// initialize the hash 
 		for (int i = 0; i < size/2; i++) {
 			int key = i*size + index;
@@ -366,7 +369,8 @@ class BasicIntHashQPTest {
 			assertEquals(numElements,hash.size());
 			expData[(index+i*i)%size]=-2;
 			System.out.println("   After remove:  Checking hash contents");
-			for (int j = 0; j < size; j++) assertEquals(expData[j],hash.getHashAt(j, 0));
+			for (int j = 0; j < size; j++) 
+				assertEquals(expData[j],hash.getHashAt(j, 0));
 		}	
 	}
 
@@ -377,9 +381,9 @@ class BasicIntHashQPTest {
 	 */
 	@Test
 	@Order(11)
-	void BasicHashRemoveAdd_test() {
+	void QPBasicHashRemoveAdd_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
-		System.out.println("Basic Test #9: Hash Remove with collisions handling method - remove in order");
+		System.out.println("Basic Test #11: Hash Remove with collisions handling method - remove in order");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		for (int index = 0; index < size; index ++) {		
@@ -396,7 +400,8 @@ class BasicIntHashQPTest {
 			assertTrue(hash.add(index+size));
 			assertTrue(hash.contains(index+size));
 			assertEquals((index+size),hash.getHashAt(index, 0));	
-			for (int j = 0; j < size; j++) assertTrue(-2 != hash.getHashAt(j, 0));
+			for (int j = 0; j < size; j++) 
+				assertTrue(-2 != hash.getHashAt(j, 0));
 		}
 		
 	}
@@ -407,10 +412,10 @@ class BasicIntHashQPTest {
 	 * the original item is re-added. This is done for size >> 1 entries.
 	 */
 	@Test
-	@Order(11)
-	void BasicHashRemoveAddDuplicate_test() {
+	@Order(12)
+	void QPBasicHashRemoveAddDuplicate_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
-		System.out.println("Basic Test #27: Hash Remove followed by duplicate add");
+		System.out.println("Basic Test #12: Hash Remove followed by duplicate add");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int stIndex = 0;
@@ -432,10 +437,10 @@ class BasicIntHashQPTest {
 	 * exceed the load factor. Designed so that each of the first 3 adds will grow the hash
 	 */
 	@Test
-	@Order(12)
-	void BasicHashGrowC_test() {
+	@Order(13)
+	void QPBasicHashGrowC_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,0.1,5);
-		System.out.println("Basic Test #6: Hash GrowthC - Exceeding Load Factor ");
+		System.out.println("Basic Test #13: Hash GrowthC - Exceeding Load Factor ");
 		int size=0;
 		assertEquals(5,hash.getTableSize());
 		System.out.println("   Adding 0 to the hash - should grow to 11");
@@ -473,10 +478,10 @@ class BasicIntHashQPTest {
 	 * exceed the load factor. Uses basic data from 0 to size-1
 	 */
 	@Test
-	@Order(13)
-	void BasicHashGrow_test() {
+	@Order(14)
+	void QPBasicHashGrow_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,0.75);
-		System.out.println("Basic Test #12: Hash Growth - Exceeding Load Factor ");
+		System.out.println("Basic Test #14: Hash Growth - Exceeding Load Factor ");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		int checkSize = size;
@@ -500,57 +505,16 @@ class BasicIntHashQPTest {
 	}
 	
 	/**
-	 * Basic hash func test. Tests the basic functionality of the clear QP hash function
-	 * by adding keys from 0 to size -1 of the hash. Tests that entries are where 
-	 * they should be. No collisions. Then tests clear to show that the full array is cleared
-	 */
-	@Test
-	@Order(14)
-	void BasicHashClearQP_test() {
-		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
-		System.out.println("Clear Test: Quadratic Probing Hash");
-		int size = hash.getTableSize();
-		assertEquals(31,size);
-		assertEquals(0,hash.size());
-		assertTrue(hash.isEmpty());
-		for (int i = 0; i < size; i++) {
-			assertTrue(hash.add(i));
-			assertEquals(i, hash.getHashAt(i, 0));
-			assertFalse(hash.isEmpty());
-		}
-		assertEquals(size,hash.getTableSize());
-		
-		hash.clear();
-		assertEquals(0, hash.size());
-		assertTrue(hash.isEmpty());
-		for (int i = 0; i < size; i++) {
-			assertEquals(-1,hash.getHashAt(i, 0));
-		}
-	}
-	
-	private boolean canPlace(Integer randKey) {
-		int base = randKey % 31;
-		for (int ind = 0; ind < 31; ind++) {
-			int placeInd = (base+ind*ind)%31;
-			if (qpHash[placeInd]==-1) {
-				qpHash[placeInd]=randKey;
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
 	 * Basic hash grow rand test. Similar to Test 12, but with randomize data - collisions are not prevented, and
 	 * are likely to occur naturally.
 	 */
 	@Test
-	@Order(13)
-	void BasicHashGrowRand_test() {
+	@Order(15)
+	void QPBasicHashGrowRand_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,0.75);
 		Arrays.fill(qpHash, -1);
 		Random random = new Random();
-		System.out.println("Basic Test #13: Grow Hash Function - Randomized");
+		System.out.println("Basic Test #15: Grow Hash Function - Randomized");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		
@@ -570,14 +534,15 @@ class BasicIntHashQPTest {
 			assertTrue(hash.add(randInts.get(i)));
 			assertTrue(hash.contains(randInts.get(i)));
 			if ((i+1)/(1.0*checkSize)>0.75) {
-				System.out.println("   Exceeded load factor: "+hash.getLoad_factor()+" size="+hash.size()+"  table size = "+size);
+				System.out.println("   Exceeded load factor: "+hash.getLoad_factor()+" size="+hash.size()
+				                   +"  table size = "+size);
 				System.out.println("   New table size is "+hash.getTableSize());
 			    assertFalse(checkSize == hash.getTableSize());
 			    printValidHash();
 			    checkSize = hash.getTableSize();
 			    assertEquals(67,checkSize);
 			    for (int j = 0; j <i; j++) {
-			    	System.out.println("Checking hash contents after growth - looking for key: "+randInts.get(j));    		
+			    	System.out.println("Checking hash contents after growth - looking for key: "+randInts.get(j));
 			    	assertTrue(hash.contains(randInts.get(j)));
 			    }
 			}
@@ -591,13 +556,14 @@ class BasicIntHashQPTest {
 	 * are likely to occur naturally.
 	 */
 	@Test
-	@Order(14)
-	void BasicHashGrowAdd_test() {
+	@Order(16)
+	void QPBasicHashGrowAdd_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,0.75);
-		int qpInit[] = {145,98,28,158,61,48,91,170,143,135,161,43,4,245,173,242,23,63,169,32,180,109,177,81,73,116,19,218,134,66,42};
+		int qpInit[] = {145,98,28,158,61,48,91,170,143,135,161,43,4,245,173,242,23,63,169,32,180,109,177,81,73,116,19,
+				        218,134,66,42};
 		int qpPostExp[] = {11,31,28,24,61,48,25,36,9,1,27,43,4,44,39,41,23,63,35,32,46,42,47,14,6,49,19,17,0,66,51};
 		int qpPreExp[] = {21,5,28,3,30,17,29,15,19,11,6,12,4,1,18,25,23,2,14,10,26,16,22};
-		System.out.println("Basic Test #14: Grow Hash Function - checking Add during grow function");
+		System.out.println("Basic Test #16: Grow Hash Function - checking Add during grow function");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		
@@ -617,7 +583,8 @@ class BasicIntHashQPTest {
 			assertTrue(hash.add(qpInit[i] ));
 			assertTrue(hash.contains(qpInit[i]));
 			if ((i+1)/(1.0*checkSize)>0.75) {
-				System.out.println("   Exceeded load factor: "+hash.getLoad_factor()+" size="+hash.size()+"  table size = "+size);
+				System.out.println("   Exceeded load factor: "+hash.getLoad_factor()+" size="+hash.size()
+				                   +"  table size = "+size);
 				System.out.println("   New table size is "+hash.getTableSize());
 			    assertFalse(checkSize == hash.getTableSize());
 			    checkSize = hash.getTableSize();
@@ -645,10 +612,10 @@ class BasicIntHashQPTest {
 	 *    add does not fail and that size (# of elements in the hash) increases.
 	 */
 	@Test
-	@Order(15)
-	void BasicAddFull_test() {
+	@Order(17)
+	void QPBasicAddFull_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
-		System.out.println("Basic Test #15: Add Failures due to full table");
+		System.out.println("Basic Test #17: Add Failures due to full table");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		for (int i = 0; i < size; i++) { 
@@ -674,10 +641,10 @@ class BasicIntHashQPTest {
 	 *    add fails and that size (# of elements in the hash) is unchanged.
 	 */
 	@Test
-	@Order(16)
-	void BasicAddDup_test() {
+	@Order(18)
+	void QPBasicAddDup_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
-		System.out.println("Basic Test #16: Duplicate add behavior...");
+		System.out.println("Basic Test #18: Duplicate add behavior...");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		for (int i = 0; i < (size-1); i++) { 
@@ -705,10 +672,10 @@ class BasicIntHashQPTest {
 	 *    false.
 	 */
 	@Test
-	@Order(17)
-	void BasicContainsFull_test() {
+	@Order(19)
+	void QPBasicContainsFull_test() {
 		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
-		System.out.println("Basic Test #17: Checking contains failures on full table");
+		System.out.println("Basic Test #19: Checking contains failures on full table");
 		int size = hash.getTableSize();
 		assertEquals(31,size);
 		for (int i = 0; i < size; i++) { 
@@ -725,6 +692,55 @@ class BasicIntHashQPTest {
 		}
 	}
 
+	/**
+	 * Basic hash func test. Tests the basic functionality of the clear QP hash function
+	 * by adding keys from 0 to size -1 of the hash. Tests that entries are where 
+	 * they should be. No collisions. Then tests clear to show that the full array is cleared
+	 */
+	@Test
+	@Order(20)
+	void QPBasicHashClear_test() {
+		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
+		System.out.println("Basic Test #20: Clear Quadratic Probing Hash");
+		int size = hash.getTableSize();
+		assertEquals(31,size);
+		assertEquals(0,hash.size());
+		assertTrue(hash.isEmpty());
+		for (int i = 0; i < size; i++) {
+			assertTrue(hash.add(i));
+			assertEquals(i, hash.getHashAt(i, 0));
+			assertFalse(hash.isEmpty());
+		}
+		assertEquals(size,hash.getTableSize());
+		
+		hash.clear();
+		assertEquals(0, hash.size());
+		assertTrue(hash.isEmpty());
+		for (int i = 0; i < size; i++) {
+			assertEquals(-1,hash.getHashAt(i, 0));
+		}
+	}
+	
+	/**
+	 * Determines if the random key can be placed in the hash... stops after 15 attempts
+	 * 
+	 */
+	private boolean canPlace(Integer randKey) {
+		int base = randKey % 31;
+		for (int ind = 0; ind < 15; ind++) {
+			int placeInd = (base+ind*ind)%31;
+			if (qpHash[placeInd]==-1) {
+				qpHash[placeInd]=randKey;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Prints the contents of HashTable1
+	 * 
+	 */
 	void printHash() {
 		System.out.println("Printing HashTable1 (QP):");
 		for (int i =0 ; i < hash.getTableSize(); i++) {
@@ -732,15 +748,18 @@ class BasicIntHashQPTest {
 		}
 
 	}
+	
+	/**
+	 * Prints the contents of HashTable1 if they are valid
+	 * 
+	 */
 	void printValidHash() {
 		System.out.println("Printing Valid HashTable1 (QP):");
 		for (int i =0 ; i < hash.getTableSize(); i++) {
-			if (hash.getHashAt(i, 0) != -1)
+			if (hash.getHashAt(i, 0) >= 0)
 			System.out.println("   ["+i+"] : "+hash.getHashAt(i, 0));
 		}
 
 	}
-
-
 	
 }
