@@ -134,7 +134,9 @@ public class MyIntHash {
 		// TODO: Part2 - if adding this key would cause the the hash load to exceed the load_factor, grow the hash.
 		//      Note that you cannot just use size in the numerator... 
 		//      Write the code to implement this check and call growHash() if required (no parameters)
-
+		if (contains(key))
+			return false;
+		
 		if (((double)(size+1)/(double)tableSize) > load_factor) {
 			growHash();
 		}
@@ -229,7 +231,7 @@ public class MyIntHash {
 	private int getNewTableSize(int startSize) {
 		// Part2: Write this method
 		int newSize = (startSize*2)+1;
-		while(!isPrime(newSize)) {
+		while(!isPrime(newSize)){
 			newSize++;
 		}
 		return newSize;
@@ -243,8 +245,8 @@ public class MyIntHash {
 	 */
 	private boolean isPrime(int size) {
 		// Part2: Write this method
-		for (int i =1; i < 10; i ++) {
-			if (i%size == 0) {
+		for (int i = 2; i < 10; i ++) {
+			if (size%i == 0) {
 				return false;
 			}
 		}
@@ -265,8 +267,6 @@ public class MyIntHash {
 	 */
 	private boolean add_LP(int key) {
 		// Part1: Write this function
-		if (contains(key))
-			return false;
 		
 		for (int i = hashFx(key); i < tableSize + hashFx(key); i++) {
 			if (hashTable1[i%tableSize] == EMPTY || hashTable1[i%tableSize] == REMOVED) {
