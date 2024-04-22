@@ -75,6 +75,10 @@ public class MyIntHash {
 		this.mode = mode;
 
 		initHashTable(hashTable1);
+		if (mode == MODE.Cuckoo) {
+			hashTable2 = new int[tableSize];
+			initHashTable(hashTable2);
+		}
 	}
 
 	/**
@@ -93,6 +97,10 @@ public class MyIntHash {
 		this.mode = mode;
 
 		initHashTable(hashTable1);
+		if (mode == MODE.Cuckoo) {
+			hashTable2 = new int[tableSize];
+			initHashTable(hashTable2);
+		}
 	}
 
 	/**
@@ -148,7 +156,7 @@ public class MyIntHash {
 		if (contains(key))
 			return false;
 		
-		if (getCurrLoadFactor() >= load_factor) {
+		if (getCurrLoadFactor() >= load_factor || getCurrLoadFactor() > 1.0) {
 			growHash();
 		}
 		
@@ -203,7 +211,7 @@ public class MyIntHash {
 		switch (mode) {
 		case Linear: growHash(hashTable1,newSize); break;
 		case Quadratic: growHash(hashTable1,newSize); break;
-//		case Cuckoo: growHash(hashTable1,newSize); break;
+		case Cuckoo: growHash(hashTable1,newSize); break;
 		}
 	}
 	
@@ -235,6 +243,20 @@ public class MyIntHash {
 				
 		}
 		
+		if (mode == MODE.Cuckoo) {
+			table = hashTable2;
+			hashTable2 = new int[newSize];
+			initHashTable(hashTable2);
+			
+			for (int i = 0; i < table.length; i ++) {
+				if (table[i] != EMPTY && table[i] != REMOVED) {
+					add(table[i]);
+				} else {
+					continue;
+				}
+					
+			}
+		}
 	}
 	
 	/**
@@ -246,6 +268,14 @@ public class MyIntHash {
 	 */
 	private int getNewTableSize(int startSize) {
 		// Part2: Write this method
+		if(mode == MODE.Cuckoo) {
+			int newSize = startSize+1000;
+			while(!isPrime(newSize)) {
+				newSize++;
+			}
+			return newSize;
+		}
+		
 		int newSize = (startSize*2)+1;
 		while(!isPrime(newSize)){
 			newSize++;
@@ -261,7 +291,7 @@ public class MyIntHash {
 	 */
 	private boolean isPrime(int size) {
 		// Part2: Write this method
-		for (int i = 2; i < 10; i ++) {
+		for (int i = 2; i < (size/2)+1; i ++) {
 			if (size%i == 0) {
 				return false;
 			}
@@ -430,16 +460,48 @@ public class MyIntHash {
 	 * @return true, if successful
 	 */
 	private boolean add_Cuckoo(int key) {
-		// Part1: Write this function
+		int loop = 0;
 		
-		for (int i = hashFx(key); i < tableSize + hashFx(key); i++) {
-			if (hashTable1[i%tableSize] == EMPTY || hashTable1[i%tableSize] == REMOVED) {
-				hashTable1[i%tableSize] = key;
-				size++;
-				return true;
-			}	
-		}
-		return false;
+		if (!placeCuckoo(key, loop%2, loop))
+			growHash();
+		return true;
+	}
+	
+	private boolean placeCuckoo(int key, int table, int loop) {
+	    int index1 = hashFx(key);
+	    int index2 = hashFx2(key);
+	    	
+		if (loop >= 4) {
+	        growHash();
+	    }
+
+	    if (table == 0) {
+	        if (hashTable1[index1] == EMPTY || hashTable1[index1] == REMOVED) {
+	            hashTable1[index1] = key;
+	            return true;
+	        } else {
+	            int evicted = hashTable1[index1];
+	            hashTable1[index1] = key;
+	            if (!placeCuckoo(evicted, (loop+1)%2, loop+1)) {
+	                hashTable1[index1] = evicted;
+	                return false;
+	            }
+	            return true;
+	        }
+	    } else {
+	        if (hashTable2[index2] == EMPTY || hashTable2[index2] == REMOVED) {
+	            hashTable2[index2] = key;
+	            return true;
+	        } else {
+	            int displacedKey = hashTable2[index2];
+	            hashTable2[index2] = key;
+	            if (!placeCuckoo(displacedKey, (loop+1)%2, loop + 1)) {
+	                hashTable2[index2] = displacedKey;
+	                return false;
+	            }
+	            return true;
+	        }
+	    }
 	}
 	
 	/**
@@ -451,13 +513,12 @@ public class MyIntHash {
 	 * @return true, if successful
 	 */
 	private boolean contains_Cuckoo(int key) {
-		// Part1: Write this method.
-		for (int i = hashFx(key); i < (tableSize + hashFx(key)); i++) {
-			if (hashTable1[i%tableSize] == key)
-				return true;
-		}
-		
-		return false;
+		if (hashTable1[hashFx(key)] == key)
+			return true;
+		if (hashTable2[hashFx2(key)] == key)
+			return true;
+		else 
+			return false;
 	}
 	
 	/**
@@ -469,20 +530,16 @@ public class MyIntHash {
 	 * @return true, if successful
 	 */
 	private boolean remove_Cuckoo(int key) {
-		// Part2: Write this function
-		for (int i = hashFx(key); i < tableSize + hashFx(key); i++) {
-			if (hashTable1[i%tableSize] == key) {
-				if ((hashTable1[(i+1)%tableSize] == EMPTY)) {
-					hashTable1[i%tableSize] = EMPTY;
-
-				} else {
-					hashTable1[i%tableSize] = REMOVED;
-				}
-				size--;
-				return true;
-			}
+		if (hashTable1[hashFx(key)] == key) {
+			hashTable1[hashFx(key)] = EMPTY;
+			size--;
+			return true;
+		} else if (hashTable2[hashFx2(key)] == key) {
+			hashTable2[hashFx2(key)] = EMPTY;
+			size--;
+			return true;
 		}
-		return false;		
+		return false;
 	}
 	
 		
@@ -502,6 +559,11 @@ public class MyIntHash {
 		switch (mode) {
 		case Linear : return hashTable1[index+offset];
 		case Quadratic : return hashTable1[index+(offset*offset)];
+		case Cuckoo: 
+			if (offset == 0)
+				return hashTable1[index];
+			else
+				return hashTable2[index];
 		}
 		return -1;
 	}
