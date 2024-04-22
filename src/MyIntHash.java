@@ -122,6 +122,17 @@ public class MyIntHash {
 	}
 	
 	/**
+	 * Hash fx2.
+	 *
+	 * @param key the key
+	 * @return the int
+	 */
+	private int hashFx2(int key) {
+		// Part1: Write this method.
+		return (key/tableSize) % tableSize;
+	}
+	
+	/**
 	 * Adds the key to the hash table. Note that this is a helper function that will call the 
 	 * required add function based upon the operating mode. However, before calling the specific
 	 * add function, determine if the hash should be resized; if so, grow the hash.
@@ -137,13 +148,14 @@ public class MyIntHash {
 		if (contains(key))
 			return false;
 		
-		if (((double)(size+1)/(double)tableSize) > load_factor) {
+		if (getCurrLoadFactor() >= load_factor) {
 			growHash();
 		}
 		
 		switch (mode) {
 			case Linear : return add_LP(key); 
-//			case Quadratic : return add_QP(key); 
+			case Quadratic : return add_QP(key); 
+			case Cuckoo : return add_Cuckoo(key); 
 			default : return false;
 		}
 	}
@@ -158,6 +170,8 @@ public class MyIntHash {
 	public boolean contains(int key) {
 		switch (mode) {
 			case Linear : return contains_LP(key);
+			case Quadratic : return contains_QP(key);
+			case Cuckoo : return contains_Cuckoo(key);
 			default : return false;
 		}
 	}
@@ -172,7 +186,8 @@ public class MyIntHash {
 	public boolean remove(int key) {
 		switch (mode) {
 			case Linear : return remove_LP(key); 
-//			case Quadratic : return remove_QP(key); 
+			case Quadratic : return remove_QP(key); 
+			case Cuckoo : return remove_Cuckoo(key); 
 			default : return false;
 		}
 	}
@@ -187,6 +202,8 @@ public class MyIntHash {
 		int newSize = getNewTableSize(tableSize);
 		switch (mode) {
 		case Linear: growHash(hashTable1,newSize); break;
+		case Quadratic: growHash(hashTable1,newSize); break;
+//		case Cuckoo: growHash(hashTable1,newSize); break;
 		}
 	}
 	
@@ -205,14 +222,13 @@ public class MyIntHash {
 		// Part2:  Write this method
 		table = hashTable1;
 		hashTable1 = new int[newSize];
-		int curSize = this.size;
 		this.tableSize=newSize;
+		max_QP_LOOP = newSize/2;
 		initHashTable(hashTable1);
-		this.size = curSize;
 		
 		for (int i = 0; i < table.length; i ++) {
 			if (table[i] != EMPTY && table[i] != REMOVED) {
-				hashTable1[hashFx(table[i])] = table[i];
+				add(table[i]);
 			} else {
 				continue;
 			}
@@ -333,6 +349,142 @@ public class MyIntHash {
 		}
 		return false;		
 	}
+	
+	/**
+	 * Adds the key using the Linear probing strategy:
+	 * 
+	 * 1) Find the first empty slot sequentially, starting at the index from hashFx(key)
+	 * 2) Update the hash table with the key
+	 * 3) increment the size
+	 * 
+	 * If no empty slots are found, return false - this would indicate that the hash needs to grow...
+	 *
+	 * @param key the key
+	 * @return true, if successful
+	 */
+	private boolean add_QP(int key) {
+		// Part1: Write this function
+		int st_index = hashFx(key);
+		int index = 0;
+		for (int i = 0; i*i < MAX_QP_OFFSET; i++) {
+			index = ((st_index + i*i) % tableSize);
+			if (hashTable1[index] == EMPTY || hashTable1[index] == REMOVED) {
+				hashTable1[index] = key;
+				size++;
+				return true;
+			}	
+		}
+		return false;
+	}
+	
+	/**
+	 * Contains - uses the Quadratic Probing method to determine if the key exists in the hash
+	 * A key condition is that there are no open spaces between any values with collisions, 
+	 * independent of where they are stored.
+	 *
+	 * @param key the key
+	 * @return true, if successful
+	 */
+	private boolean contains_QP(int key) {
+		// Part1: Write this method.
+		int st_index = hashFx(key);
+		int index = 0;
+		for (int i = 0; i*i < MAX_QP_OFFSET; i++) {
+			index = (st_index + i*i)% tableSize;
+			if (hashTable1[index] == key) {
+				return true;
+			}	
+		}
+		return false;
+	}
+	
+	/**
+	 * Remove - uses the Quadratic Probing method to evict a key from the hash, if it exists
+	 * A key requirement of this function is that the evicted key cannot introduce an open space
+	 * if there are subsequent values which had collisions...
+	 * 
+	 * @param key the key
+	 * @return true, if successful
+	 */
+	private boolean remove_QP(int key) {
+		// Part2: Write this function
+		int st_index = hashFx(key);
+		int index = 0; 
+		
+		for (int i = 0; i*i < MAX_QP_OFFSET; i++) {
+			index = ((st_index + i*i)%tableSize);
+			if (hashTable1[index] == key) {
+				hashTable1[index] = REMOVED;
+				size--;
+				return true;
+			}
+		}
+		return false;		
+	}
+	
+	
+	/**
+	 * Adds the key using the Cuckoo strategy:
+	 *
+	 * @param key the key
+	 * @return true, if successful
+	 */
+	private boolean add_Cuckoo(int key) {
+		// Part1: Write this function
+		
+		for (int i = hashFx(key); i < tableSize + hashFx(key); i++) {
+			if (hashTable1[i%tableSize] == EMPTY || hashTable1[i%tableSize] == REMOVED) {
+				hashTable1[i%tableSize] = key;
+				size++;
+				return true;
+			}	
+		}
+		return false;
+	}
+	
+	/**
+	 * Contains - uses the Cuckoo method to determine if the key exists in the hash
+	 * A key condition is that there are no open spaces between any values with collisions, 
+	 * independent of where they are stored.
+	 * 
+	 * @param key the key
+	 * @return true, if successful
+	 */
+	private boolean contains_Cuckoo(int key) {
+		// Part1: Write this method.
+		for (int i = hashFx(key); i < (tableSize + hashFx(key)); i++) {
+			if (hashTable1[i%tableSize] == key)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Remove - uses the Cuckoo method to evict a key from the hash, if it exists
+	 * A key requirement of this function is that the evicted key cannot introduce an open space
+	 * if there are subsequent values which had collisions...
+	 * 
+	 * @param key the key
+	 * @return true, if successful
+	 */
+	private boolean remove_Cuckoo(int key) {
+		// Part2: Write this function
+		for (int i = hashFx(key); i < tableSize + hashFx(key); i++) {
+			if (hashTable1[i%tableSize] == key) {
+				if ((hashTable1[(i+1)%tableSize] == EMPTY)) {
+					hashTable1[i%tableSize] = EMPTY;
+
+				} else {
+					hashTable1[i%tableSize] = REMOVED;
+				}
+				size--;
+				return true;
+			}
+		}
+		return false;		
+	}
+	
 		
 	/**
 	 * Gets the hash at. Returns the value of the hash at the specified index, and (if required by the operating mode) 
@@ -349,6 +501,7 @@ public class MyIntHash {
 		//             for now, complete the case for Linear Probing
 		switch (mode) {
 		case Linear : return hashTable1[index+offset];
+		case Quadratic : return hashTable1[index+(offset*offset)];
 		}
 		return -1;
 	}
@@ -393,7 +546,7 @@ public class MyIntHash {
 	 */
 	public double getCurrLoadFactor() {
 		// write this method
-		return (double)size / (double)tableSize;
+		return (double)(size+1)/(double)tableSize;
 	}
 
 	/**
