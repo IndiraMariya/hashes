@@ -71,6 +71,27 @@ class IntHashBenchmarkBTest {
 	/** The Constant CUCKOO. */
 	private static final int CUCKOO = 3;	
 
+	/** The Constant TABLESIZE. */
+	private static final int TABLESIZE = 4;
+	
+	/** The Constant VALID. */
+	private static final int VALID = 0;
+	
+	/** The Constant EMPTY. */
+	private static final int EMPTY = 1;
+	
+	/** The Constant C_HIT. */
+	private static final int C_HIT = 0;
+	
+	/** The Constant C_MISS. */
+	private static final int C_MISS = 1;
+	
+	/** The Constant REMOVE. */
+	private static final int REMOVE = 2;
+	
+	/** The Constant ADD. */
+	private static final int ADD = 3;
+	
 	/**  Array to hold the data from the input file. */
 	private static int[] dSet;
 
@@ -128,7 +149,8 @@ class IntHashBenchmarkBTest {
 			System.out.println("Writing Benchmark data to file: "+outputFileA.getName());
 			String hashImp = "";
 
-			bw.write("Hash Implementation,LoadFactor,Iteration,Avg Contains (hit), Avg Contains (miss), Avg Remove, Avg Add\n");
+			bw.write("Hash Implementation,LoadFactor,Iteration,Avg Contains (hit), Avg Contains (miss), Avg Remove,"
+					 +" Avg Add, TableSize\n");
 			for (int ht = 0; ht < NUM_HASHES;ht ++) {
 				if (ht == LP) hashImp = "Linear Probing";
 				if (ht == QP) hashImp = "Quadratic Probing";
@@ -136,7 +158,9 @@ class IntHashBenchmarkBTest {
 				if (ht == CUCKOO) hashImp = "Cuckoo";
 				for (int lp = 0; lp < NUM_LOOPS; lp++) {
 					for (int iter = 0; iter < NUM_ITERATIONS; iter++) {
-						String outStr = hashImp+","+lfLimit[lp]+","+iter+","+bmData[ht][lp][iter][0]+","+bmData[ht][lp][iter][1]+","+bmData[ht][lp][iter][2]+","+bmData[ht][lp][iter][3]+","+bmData[ht][lp][iter][4]+"\n";
+						String outStr = hashImp+","+lfLimit[lp]+","+iter+","+bmData[ht][lp][iter][C_HIT]+","
+			                    +bmData[ht][lp][iter][C_MISS]+","+bmData[ht][lp][iter][REMOVE]+","
+						        +bmData[ht][lp][iter][ADD]+","+bmData[ht][lp][iter][TABLESIZE]+"\n";
 						bw.write(outStr);
 					}
 				}
@@ -154,7 +178,7 @@ class IntHashBenchmarkBTest {
 	 * For each hashType (row):
 	 *    For each chunk of addresses (row):
 	 *       For each load factor (column):
-	 *       	report #valid, #empty
+	 *       	report #valid, #empty.
 	 *
 	 * @param outFile the filename of file that will hold the data
 	 */
@@ -179,7 +203,7 @@ class IntHashBenchmarkBTest {
 				for (int chunk = 0; chunk < NUM_BUCKETS; chunk++) {
 					outStr = hashImp;
 					for (int lp = 0; lp < NUM_LOOPS; lp++) {
-						outStr += ","+hashAnalysis[i][lp][chunk][0]+","+hashAnalysis[i][lp][chunk][1];
+						outStr += ","+hashAnalysis[i][lp][chunk][VALID]+","+hashAnalysis[i][lp][chunk][EMPTY];
 					}
 					bw.write(outStr+"\n");
 				}
@@ -251,10 +275,11 @@ class IntHashBenchmarkBTest {
 		int[][] hit = new int[NUM_LOOPS][NUM_HIT_MISS];
 		int[][] miss = new int[NUM_LOOPS][NUM_HIT_MISS];
 
-		for (int iter = 0; iter <NUM_ITERATIONS; iter++) {    // loop through the testing 5 times
+		for (int iter = 0; iter <NUM_ITERATIONS; iter++) {    // loop through the testing NUM_ITERATIONS times
 			int dataIndex = 0;
 			hash = new MyIntHash(MyIntHash.MODE.Linear,1.1,TEST_SIZE);
-			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")+" Linear Hash Implementation - Iteration "+iter);
+			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")+
+							   " Linear Hash Implementation - Iteration "+iter);
 			for (int loop = 0; loop < lfLimit.length; loop++) {
 				// TODO: add elements to the hash until it is just greater than the load factor limit
 
@@ -312,7 +337,8 @@ class IntHashBenchmarkBTest {
 		for (int iter = 0; iter <NUM_ITERATIONS; iter++) {
 			hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1,TEST_SIZE);
 			int dataIndex = 0;
-			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")+" Quadratic Hash Implementation - Iteration "+iter);
+			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")+
+					           " Quadratic Hash Implementation - Iteration "+iter);
 			// TODO: Write this method - but use QP for reporting the data
 		}
 		assertTrue(true);
@@ -347,7 +373,8 @@ class IntHashBenchmarkBTest {
 		for (int iter = 0; iter <NUM_ITERATIONS; iter++) {
 			hash = new MyIntHash(MyIntHash.MODE.LinkedList,1.1,TEST_SIZE);
 			int dataIndex = 0;
-			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")+" LinkedList Hash Implementation - Iteration "+iter);
+			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")
+			                   +" LinkedList Hash Implementation - Iteration "+iter);
 			//TODO: Write this method - but use LL for reporting the data
 		}
 		assertTrue(true);
@@ -382,7 +409,8 @@ class IntHashBenchmarkBTest {
 		for (int iter = 0; iter <NUM_ITERATIONS; iter++) {
 			hash = new MyIntHash(MyIntHash.MODE.Cuckoo,1.1,TEST_SIZE);
 			int dataIndex = 0;
-			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")+" Cuckoo Hash Implementation - Iteration "+iter);
+			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")
+			                   +" Cuckoo Hash Implementation - Iteration "+iter);
 			//TODO: Write this method - but use CUCKOO for reporting the data and cuckooLoop for the hash limit
 		}
 		assertTrue(true);
@@ -479,8 +507,9 @@ class IntHashBenchmarkBTest {
 	 * @param loop indicates which load factor was used for this hash
 	 */
 	private void analyzeLPHash(int loop) {
+		int hashType = LP;
 		int tableSize = hash.getTableSize();
-		int chunk = tableSize/NUM_BUCKETS + 1;  // ~ 1% of the hash
+		int chunk = tableSize/NUM_BUCKETS;  // ~ 1% of the hash
 		int htIndex = 0;
 		int dataIndex = 0;
 		while (htIndex < tableSize ) {
@@ -494,9 +523,10 @@ class IntHashBenchmarkBTest {
 					empty++;
 				htIndex++;
 			}
-			hashAnalysis[LP][loop][dataIndex][0] = valid;
-			hashAnalysis[LP][loop][dataIndex][1] = empty;
-			dataIndex++;
+			hashAnalysis[hashType][loop][dataIndex][VALID] = valid;
+			hashAnalysis[hashType    ][loop][dataIndex][EMPTY] = empty;
+			if (htIndex != NUM_BUCKETS*chunk)
+				dataIndex++;
 		}
 	}
 
@@ -555,11 +585,12 @@ class IntHashBenchmarkBTest {
 	 * @param iter the iter
 	 */
 	private void reportData(int bmIndex,int loop, int iter) {
-		System.out.printf("%3.1f,%10.6f,%10.6f,%10.6f,%10.6f, %d\n",lfLimit[loop],avgContains,avgContainsMiss,avgRemove,avgAdd,hash.getTableSize());
-		bmData[bmIndex][loop][iter][0]=avgContains;
-		bmData[bmIndex][loop][iter][1]=avgContainsMiss;
-		bmData[bmIndex][loop][iter][2]=avgRemove;
-		bmData[bmIndex][loop][iter][3]=avgAdd;
-		bmData[bmIndex][loop][iter][4]=hash.getTableSize();
+		System.out.printf("%3.1f,%10.6f,%10.6f,%10.6f,%10.6f, %d\n",lfLimit[loop],avgContains,avgContainsMiss,
+				          avgRemove,avgAdd,hash.getTableSize());
+		bmData[bmIndex][loop][iter][C_HIT]=avgContains;
+		bmData[bmIndex][loop][iter][C_MISS]=avgContainsMiss;
+		bmData[bmIndex][loop][iter][REMOVE]=avgRemove;
+		bmData[bmIndex][loop][iter][ADD]=avgAdd;
+		bmData[bmIndex][loop][iter][TABLESIZE]=hash.getTableSize();
 	}
 }

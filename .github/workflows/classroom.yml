@@ -1,0 +1,36 @@
+name: Autograding Tests
+'on':
+- push
+- workflow_dispatch
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up JDK 8 for x64
+      uses: actions/setup-java@v4
+      with:
+         java-version:  8
+         distribution: temurin
+         architecture: x64      
+    - name: BasicIntHashTests
+      id: basicinthashtests
+      uses: education/autograding-command-grader@v1
+      with:
+        test-name: BasicIntHashTests
+        setup-command: ''
+        command: gradle test --tests "BasicIntHash*"
+        timeout: 3
+    - name: Autograding Reporter
+      uses: education/autograding-grading-reporter@v1
+      env:
+        BASICINTHASHTESTS_RESULTS: "${{steps.basicinthashtests.outputs.result}}"
+      with:
+        runners: basicinthashtests
