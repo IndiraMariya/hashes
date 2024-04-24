@@ -850,6 +850,55 @@ class BasicIntHashCuckooTest {
 	}
 
 	/**
+	 * Basic hash grow test. Tests to see that the hash does NOT grow if the hash already contains the key
+	 */
+	@Test
+	@Order(20)
+	void CKBasicHashGrowD_test() {
+		hash = new MyIntHash(MyIntHash.MODE.Cuckoo,0.15,5);
+		System.out.println("Basic Test #20: Hash GrowthD - checking Contains vs GrowHash ordering");
+		int size=0;
+		assertEquals(5,hash.getTableSize());
+		System.out.println("   Adding 0 to the hash - should not grow");
+		assertTrue(hash.add(0));
+		assertEquals(5,hash.getTableSize());
+		for (int i = 0; i < 5; i++) {
+			if (hash.getHashAt(i, 0)>=0) size++;
+			if (hash.getHashAt(i, 1)>=0) size++;
+		}
+		assertEquals(1,size);
+		System.out.println("   Adding 0 (duplicate) to the hash - should stay at 5");
+		assertFalse(hash.add(0));
+		assertEquals(5,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 5; i++) {
+			if (hash.getHashAt(i, 0)>=0) size++;
+			if (hash.getHashAt(i, 1)>=0) size++;
+		}
+		assertEquals(1,size);
+
+		System.out.println("   Adding 10 to the hash - should grow to 1009");
+		assertTrue(hash.add(10));
+		assertEquals(1009,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 1009; i++) {
+			if (hash.getHashAt(i, 0)>=0) size++;
+			if (hash.getHashAt(i, 1)>=0) size++;
+		}
+		assertEquals(2,size);
+		System.out.println("   Adding 10 (duplicate) to the hash - should stay at 1009");
+		assertFalse(hash.add(10));
+		assertEquals(1009,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 1009; i++) {
+			if (hash.getHashAt(i, 0)>=0) size++;
+			if (hash.getHashAt(i, 1)>=0) size++;
+		}
+		assertEquals(2,size);
+	
+	}
+
+	/**
 	 * Prints the contents of HashTable1 and HashTable2 by index
 	 * 
 	 */

@@ -22,6 +22,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(OrderAnnotation.class)
 class BasicIntHashQPTest {
 	private final boolean DEBUG = false;
+	private final int EMPTY = -1;
+	private final int REMOVED = -2;
 	private MyIntHash hash;
 	private int[] qpHash = new int[31]; // this will check QP random values during the grow hash
 
@@ -720,6 +722,175 @@ class BasicIntHashQPTest {
 			assertEquals(-1,hash.getHashAt(i, 0));
 		}
 	}
+	
+	/**
+	 * Basic add - dup Test.  This test operates on the following principle:
+	 * 
+	 * 1) Fill the hash table to tableSize/2 -1 with collisions. Ensure that data goes to the correct
+	 *    location and that size does not grow.
+	 * 2) attempt to add an existing element to the hash at each filled table location. Check that
+	 *    add fails and that size (# of elements in the hash) is unchanged.
+	 */
+	@Test
+	@Order(21)
+	void QPBasicAddDupCollisions_test() {
+		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
+		System.out.println("Basic Test #21: Duplicate add behavior...");
+		int size = hash.getTableSize();
+		assertEquals(31,size);
+		// -1 saves space for an invalid duplicate entry
+		for (int i = 0; i < (size/2-1); i++) { 
+			int numElements = hash.size();
+			assertTrue(hash.add(i*size));
+			assertTrue((numElements+1)==hash.size());
+			int expectedIndex = (i*i)%size;
+			assertEquals(i*size,hash.getHashAt(expectedIndex, 0));
+		}
+		
+		int numElements = hash.size();
+		for (int i = 0; i < (size/2-1); i++) {
+			System.out.println("   Attempting to add duplicate "+(i*size)+" to table");
+			assertTrue(hash.contains(i*size));
+			assertFalse(hash.add(i*size));
+			assertTrue(numElements == hash.size());
+		}
+	}
+	
+	/**
+	 * Basic hash Remove Add DupCollision test. This test fills the hash with conflicting indexes, and then
+	 * removes two of them and tries to add a duplicate item. This should return false. 
+	 * This is done for size >> 1 entries.
+	 */
+	@Test
+	@Order(22)
+	void QPBasicHashRemoveAddDupCollision_test() {
+		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
+		System.out.println("Basic Test #22: Hash Remove of two items followed by duplicate add");
+		int size = hash.getTableSize();
+		int expectedIndex = 0;
+		assertEquals(31,size);
+		for (int i = 0; i < size/2-1; i++) {
+			assertFalse(hash.contains(i*size));
+			assertTrue(hash.add(i*size));
+		}
+		// going to remove data at index 0 and 1;
+		for (int i = 0; i < 2; i++) {
+			assertTrue(hash.remove(i*size));
+			assertFalse(hash.contains(i*size));
+			expectedIndex = (i*i)%size;
+			assertEquals(REMOVED,hash.getHashAt(expectedIndex, 0));
+		}
+		
+		for (int i = 2; i < (size/2-1); i++) {
+			assertTrue(hash.contains(i*size));
+			assertFalse(hash.add(size*i));
+		}
+	}
+	
+	/**
+	 * Basic hash Remove Add DupPlacement test. This test fills the hash with conflicting indexes, and then
+	 * removes four of them and then re-adds them and checks placement. They should be in the same slots.
+	 */
+	@Test
+	@Order(23)
+	void QPBasicHashRemoveAddDupPlacement_test() {
+		hash = new MyIntHash(MyIntHash.MODE.Quadratic,1.1);
+		System.out.println("Basic Test #23: Hash Remove 4 entries followed by re-add and check placement");
+		int size = hash.getTableSize();
+		assertEquals(31,size);
+		int expectedIndex = 0;
+		for (int i = 0; i < size/2-1; i++) {
+			assertFalse(hash.contains(i*size));
+			assertTrue(hash.add(i*size));
+		}
+		// going to remove data at indices 0 - 3;
+		for (int i = 0; i < 4; i++) {
+			assertTrue(hash.remove(i*size));
+			assertFalse(hash.contains(i*size));
+			expectedIndex = (i*i)%size;
+			assertEquals(REMOVED,hash.getHashAt(expectedIndex, 0));
+		}
+		
+		// now add them back and ensure that they are in the same slot...
+		for (int i = 0; i < 4; i++) {
+			assertTrue(hash.add(i*size));
+			assertTrue(hash.contains(i*size));
+			expectedIndex = (i*i)%size;
+			assertEquals(i*size,hash.getHashAt(expectedIndex, 0));
+		}
+			
+	}
+	
+	/**
+	 * Basic hash grow test. Tests to see that the hash does NOT grow if the hash already contains the key
+	 */
+	@Test
+	@Order(24)
+	void QPBasicHashGrowD_test() {
+		hash = new MyIntHash(MyIntHash.MODE.Quadratic,0.1,5);
+		System.out.println("Basic Test #24: Hash GrowthD - checking Contains vs GrowHash ordering");
+		int size=0;
+		assertEquals(5,hash.getTableSize());
+		System.out.println("   Adding 0 to the hash - should grow to 11");
+		assertTrue(hash.add(0));
+		assertEquals(11,hash.getTableSize());
+		for (int i = 0; i < 11; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(1,size);
+		System.out.println("   Adding 0 (duplicate) to the hash - should stay at 11");
+		assertFalse(hash.add(0));
+		assertEquals(11,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 11; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(1,size);
+		System.out.println("   Adding 31 (collision) to the hash - should grow to 23");
+		assertTrue(hash.add(31));
+		assertEquals(23,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 23; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(2,size);
+		System.out.println("   Adding 31 (duplicate) to the hash - should stay at 23");
+		assertFalse(hash.add(31));
+		assertEquals(23,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 23; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(2,size);
+		System.out.println("   Adding 62 (collision) to the hash - should grow to 47");
+		assertTrue(hash.add(62));
+		assertEquals(47,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 47; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(3,size);
+		System.out.println("   Adding 62 (duplicate) to the hash - should stay at 47");
+		assertFalse(hash.add(62));
+		assertEquals(47,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 47; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(3,size);
+		System.out.println("   Adding 93 (collision) to the hash - should stay at 47");
+		assertTrue(hash.add(93));
+		assertEquals(47,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 47; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(4,size);	
+		System.out.println("   Adding 93 (duplicate) to the hash - should stay at 47");
+		assertFalse(hash.add(93));
+		assertEquals(47,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 47; i++) 
+			if (hash.getHashAt(i, 0)>=0) size++;
+		assertEquals(4,size);	
+	}
+	
+
+
+
 	
 	/**
 	 * Determines if the random key can be placed in the hash... stops after 15 attempts

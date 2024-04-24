@@ -376,6 +376,38 @@ class BasicIntHashLP1Test {
 	}
 	
 	/**
+	 * Basic add - dup Test.  This test operates on the following principle:
+	 * 
+	 * 1) completely fill the hash table with collisions. Ensure that data goes to the correct
+	 *    location and that size grows as expected.
+	 * 2) attempt to add an existing element to the hash at each table location. Check that
+	 *    add fails and that size (# of elements in the hash) is unchanged.
+	 */
+	@Test
+	@Order(12)
+	void LPBasicAddDupCollisions_test() {
+		hash = new MyIntHash(MyIntHash.MODE.Linear,1.1);
+		System.out.println("Basic Test #12: Duplicate add behavior...");
+		int size = hash.getTableSize();
+		assertEquals(31,size);
+		for (int i = 0; i < (size-1); i++) { 
+			int numElements = hash.size();
+			assertTrue(hash.add(i*size));
+			assertTrue((numElements+1)==hash.size());
+			assertEquals(i*size,hash.getHashAt(i, 0));
+		}
+		
+		int numElements = hash.size();
+		for (int i = 0; i < (size-1); i++) {
+			System.out.println("   Attempting to add duplicate "+(i*size)+" to table");
+			assertTrue(hash.contains(i*size));
+			assertFalse(hash.add(i*size));
+			assertTrue(numElements == hash.size());
+		}
+	}
+
+
+	/**
 	 * Prints the contents of HashTable1
 	 * 
 	 */

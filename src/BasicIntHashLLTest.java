@@ -670,6 +670,104 @@ class BasicIntHashLLTest {
 		}
 	}
 
+	/**
+	 * Basic hash grow test. Tests to see that the hash does NOT grow if the hash already contains the key
+	 */
+	@Test
+	@Order(20)
+	void LLBasicHashGrowD_test() {
+		hash = new MyIntHash(MyIntHash.MODE.LinkedList,0.1,5);
+		System.out.println("Basic Test #20: Hash GrowthD - checking Contains vs GrowHash ordering");
+		int size=0;
+		assertEquals(5,hash.getTableSize());
+		System.out.println("   Adding 0 to the hash - should grow to 11");
+		assertTrue(hash.add(0));
+		assertEquals(11,hash.getTableSize());
+		for (int i = 0; i < 11; i++) {
+			if (hash.getHashAt(i, 0) != null) {
+				for (int j=0; hash.getHashAt(i, j)!=-1; j++) 
+					size++;				
+			}
+		}
+		assertEquals(1,size);
+		System.out.println("   Adding 0 (duplicate) to the hash - should stay at 11");
+		assertFalse(hash.add(0));
+		assertEquals(11,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 11; i++) {
+			if (hash.getHashAt(i, 0) != null) {
+				for (int j=0; hash.getHashAt(i, j)!=-1; j++) 
+					size++;				
+			}
+		}
+		assertEquals(1,size);
+		System.out.println("   Adding 31 (collision) to the hash - should grow to 23");
+		assertTrue(hash.add(31));
+		assertEquals(23,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 23; i++) {
+			if (hash.getHashAt(i, 0) != null) {
+				for (int j=0; hash.getHashAt(i, j)!=-1; j++) 
+					size++;				
+			}
+		}
+		assertEquals(2,size);
+		System.out.println("   Adding 31 (duplicate) to the hash - should stay at 23");
+		assertFalse(hash.add(31));
+		assertEquals(23,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 23; i++) {
+			if (hash.getHashAt(i, 0) != null) {
+				for (int j=0; hash.getHashAt(i, j)!=-1; j++) 
+					size++;				
+			}
+		}
+		assertEquals(2,size);
+		System.out.println("   Adding 62 (collision) to the hash - should grow to 47");
+		assertTrue(hash.add(62));
+		assertEquals(47,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 47; i++) {
+			if (hash.getHashAt(i, 0) != null) {
+				for (int j=0; hash.getHashAt(i, j)!=-1; j++) 
+					size++;				
+			}
+		}
+		assertEquals(3,size);
+		System.out.println("   Adding 62 (duplicate) to the hash - should stay at 47");
+		assertFalse(hash.add(62));
+		assertEquals(47,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 47; i++) {
+			if (hash.getHashAt(i, 0) != null) {
+				for (int j=0; hash.getHashAt(i, j)!=-1; j++) 
+					size++;				
+			}
+		}
+		assertEquals(3,size);
+		System.out.println("   Adding 93 (collision) to the hash - should stay at 47");
+		assertTrue(hash.add(93));
+		assertEquals(47,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 47; i++) {
+			if (hash.getHashAt(i, 0) != null) {
+				for (int j=0; hash.getHashAt(i, j)!=-1; j++) 
+					size++;				
+			}
+		}
+		assertEquals(4,size);	
+		System.out.println("   Adding 93 (duplicate) to the hash - should stay at 47");
+		assertFalse(hash.add(93));
+		assertEquals(47,hash.getTableSize());
+		size = 0;
+		for (int i = 0; i < 47; i++) {
+			if (hash.getHashAt(i, 0) != null) {
+				for (int j=0; hash.getHashAt(i, j)!=-1; j++) 
+					size++;				
+			}
+		}
+		assertEquals(4,size);	
+	}
 
 	/**
 	 * Prints the contents of HashTableLL
