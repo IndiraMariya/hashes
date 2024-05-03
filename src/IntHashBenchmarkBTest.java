@@ -281,8 +281,11 @@ class IntHashBenchmarkBTest {
 			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")+
 							   " Linear Hash Implementation - Iteration "+iter);
 			for (int loop = 0; loop < lfLimit.length; loop++) {
-				// TODO: add elements to the hash until it is just greater than the load factor limit
-
+				//add elements to the hash until it is just greater than the load factor limit
+				while (hash.getCurrLoadFactor() < lfLimit[loop] && dataIndex < dSet.length) {
+					hash.add(dSet[dataIndex]);
+					dataIndex++;
+				}
 				// this will generate NUM_HIT_MISS random keys that will exist or miss in the hash
 				if (iter == 0 ) {
 					hit[loop] = genNRandomInts(Arrays.copyOfRange(dSet,0, dataIndex));
@@ -339,7 +342,33 @@ class IntHashBenchmarkBTest {
 			int dataIndex = 0;
 			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")+
 					           " Quadratic Hash Implementation - Iteration "+iter);
-			// TODO: Write this method - but use QP for reporting the data
+			for (int loop = 0; loop < lfLimit.length; loop++) {
+				// add elements to the hash until it is just greater than the load factor limit
+				while (hash.getCurrLoadFactor() < lfLimit[loop] && dataIndex < dSet.length) {
+					hash.add(dSet[dataIndex]);
+					dataIndex++;
+				}
+				// this will generate NUM_HIT_MISS random keys that will exist or miss in the hash
+				if (iter == 0 ) {
+					hit[loop] = genNRandomInts(Arrays.copyOfRange(dSet,0, dataIndex));
+					miss[loop] = genNRandomInts(Arrays.copyOfRange(dSet,dataIndex,dSet.length - 1));
+				}
+
+				// measure the time to do NUM_HIT_MISS contains checks on numbers guaranteed to be in the hash
+				avgContains = measureContains(hit[loop]);
+				// measure the time to do NUM_HIT_MISS contains checks on numbers guaranteed to NOT be in the hash
+				avgContainsMiss = measureContains(miss[loop]);
+				// measure the time to request NUM_HIT_MISS removes - number are all initially in the hash
+				avgRemove = measureRemove(hit[loop]);
+				// measure the time to do NUM_HIT_MISS inserts - all numbers initially are NOT in the hash...
+				avgAdd = measureAdd(hit[loop]);
+
+				reportData(QP,loop,iter);
+				if (iter == 0) {
+					analyzeHash(QP,loop);
+				}
+
+			}
 		}
 		assertTrue(true);
 	}
@@ -375,7 +404,33 @@ class IntHashBenchmarkBTest {
 			int dataIndex = 0;
 			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")
 			                   +" LinkedList Hash Implementation - Iteration "+iter);
-			//TODO: Write this method - but use LL for reporting the data
+			for (int loop = 0; loop < lfLimit.length; loop++) {
+				//add elements to the hash until it is just greater than the load factor limit
+				while (hash.getCurrLoadFactor() < lfLimit[loop] && dataIndex < dSet.length) {
+					hash.add(dSet[dataIndex]);
+					dataIndex++;
+				}
+				// this will generate NUM_HIT_MISS random keys that will exist or miss in the hash
+				if (iter == 0 ) {
+					hit[loop] = genNRandomInts(Arrays.copyOfRange(dSet,0, dataIndex));
+					miss[loop] = genNRandomInts(Arrays.copyOfRange(dSet,dataIndex,dSet.length - 1));
+				}
+
+				// measure the time to do NUM_HIT_MISS contains checks on numbers guaranteed to be in the hash
+				avgContains = measureContains(hit[loop]);
+				// measure the time to do NUM_HIT_MISS contains checks on numbers guaranteed to NOT be in the hash
+				avgContainsMiss = measureContains(miss[loop]);
+				// measure the time to request NUM_HIT_MISS removes - number are all initially in the hash
+				avgRemove = measureRemove(hit[loop]);
+				// measure the time to do NUM_HIT_MISS inserts - all numbers initially are NOT in the hash...
+				avgAdd = measureAdd(hit[loop]);
+
+				reportData(LL,loop,iter);
+				if (iter == 0) {
+					analyzeHash(LL,loop);
+				}
+
+			}
 		}
 		assertTrue(true);
 	}
@@ -411,7 +466,34 @@ class IntHashBenchmarkBTest {
 			int dataIndex = 0;
 			System.out.println("\n\nBenchmark "+dataSet.replaceAll(".csv","")
 			                   +" Cuckoo Hash Implementation - Iteration "+iter);
-			//TODO: Write this method - but use CUCKOO for reporting the data and cuckooLoop for the hash limit
+			//: Write this method - but use CUCKOO for reporting the data and cuckooLoop for the hash limit
+			for (int loop = 0; loop < cuckooLimit.length; loop++) {
+				// : add elements to the hash until it is just greater than the load factor limit
+				while (hash.getCurrLoadFactor() < lfLimit[loop] && dataIndex < dSet.length) {
+					hash.add(dSet[dataIndex]);
+					dataIndex++;
+				}
+				// this will generate NUM_HIT_MISS random keys that will exist or miss in the hash
+				if (iter == 0 ) {
+					hit[loop] = genNRandomInts(Arrays.copyOfRange(dSet,0, dataIndex));
+					miss[loop] = genNRandomInts(Arrays.copyOfRange(dSet,dataIndex,dSet.length));
+				}
+
+				// measure the time to do NUM_HIT_MISS contains checks on numbers guaranteed to be in the hash
+				avgContains = measureContains(hit[loop]);
+				// measure the time to do NUM_HIT_MISS contains checks on numbers guaranteed to NOT be in the hash
+				avgContainsMiss = measureContains(miss[loop]);
+				// measure the time to request NUM_HIT_MISS removes - number are all initially in the hash
+				avgRemove = measureRemove(hit[loop]);
+				// measure the time to do NUM_HIT_MISS inserts - all numbers initially are NOT in the hash...
+				avgAdd = measureAdd(hit[loop]);
+
+				reportData(CUCKOO,loop,iter);
+				if (iter == 0) {
+					analyzeHash(CUCKOO,loop);
+				}
+
+			}
 		}
 		assertTrue(true);
 	}
@@ -427,7 +509,10 @@ class IntHashBenchmarkBTest {
 		long stop;
 
 		start = System.nanoTime();
-		//TODO: write the code to perform contains() on each key in a[]
+		//: write the code to perform contains() on each key in a[]
+		for (int i = 0; i < a.length; i++) {
+			hash.contains(a[i]);
+		}
 		stop = System.nanoTime();
 		return (double) ((stop - start)/1E5);
 	}
@@ -443,7 +528,9 @@ class IntHashBenchmarkBTest {
 		long stop;
 
 		start = System.nanoTime();
-		//TODO: write the code to perform remove() on each key in a[]
+		for (int i = 0; i < a.length; i++) {
+			hash.remove(a[i]);
+		}
 		stop = System.nanoTime();
 		return (double) ((stop - start)/1E5);
 	}
@@ -459,7 +546,9 @@ class IntHashBenchmarkBTest {
 		long stop;
 
 		start = System.nanoTime();
-		//TODO: write the code to perform add() on each key in a[]
+		for (int i = 0; i < a.length; i++) {
+			hash.add(a[i]);
+		}
 		stop = System.nanoTime();
 		return (double) ((stop - start)/1E5);
 	}
@@ -476,9 +565,9 @@ class IntHashBenchmarkBTest {
 	private void analyzeHash(int mode, int loop) {
 		switch (mode) {
 		case LP : analyzeLPHash(loop); break;
-//		case QP : analyzeQPHash(loop); break;
-//		case LL : analyzeLLHash(loop); break;
-//		case CUCKOO : analyzeCuckooHash(loop); break;
+		case QP : analyzeQPHash(loop); break;
+		case LL : analyzeLLHash(loop); break;
+		case CUCKOO : analyzeCuckooHash(loop); break;
 		}
 	}
 	
@@ -527,6 +616,84 @@ class IntHashBenchmarkBTest {
 			hashAnalysis[hashType    ][loop][dataIndex][EMPTY] = empty;
 			if (htIndex != NUM_BUCKETS*chunk)
 				dataIndex++;
+		}
+	}
+	
+	private void analyzeQPHash(int loop) {
+		int hashType = QP;
+		int tableSize = hash.getTableSize();
+		int chunk = tableSize/NUM_BUCKETS;  // ~ 1% of the hash
+		int htIndex = 0;
+		int dataIndex = 0;
+		while (htIndex < tableSize ) {
+			int valid = 0;
+			int empty = 0;
+			for (int i = 0; (i < chunk) && (htIndex< tableSize); i++ ) {
+				int data = hash.getHashAt(htIndex, 0);
+				if (data >= 0 ) 
+					valid++;
+				else
+					empty++;
+				htIndex++;
+			}
+			hashAnalysis[hashType][loop][dataIndex][VALID] = valid;
+			hashAnalysis[hashType    ][loop][dataIndex][EMPTY] = empty;
+			if (htIndex != NUM_BUCKETS*chunk)
+				dataIndex++;
+		}
+	}
+	
+	private void analyzeLLHash(int loop) {
+		int hashType = LL;
+		int tableSize = hash.getTableSize();
+		int chunk = tableSize/NUM_BUCKETS;  // ~ 1% of the hash
+		int htIndex = 0;
+		int dataIndex = 0;
+		while (htIndex < tableSize ) {
+			int valid = 0;
+			int empty = 0;
+			for (int i = 0; (i < chunk) && (htIndex< tableSize); i++ ) {
+				
+				if (hash.getHashAt(htIndex, 0) == null) {
+				    empty++;
+				} else if (hash.getHashAt(htIndex, 0) >= 0) {
+				    valid++;
+				} else {
+				    empty++;
+				}
+				htIndex++;
+			}
+			hashAnalysis[hashType][loop][dataIndex][VALID] = valid;
+			hashAnalysis[hashType    ][loop][dataIndex][EMPTY] = empty;
+			if (htIndex != NUM_BUCKETS*chunk)
+				dataIndex++;
+		}
+	}
+	
+	private void analyzeCuckooHash(int loop) {
+		int hashType = CUCKOO;
+		int tableSize = hash.getTableSize();
+		int chunk = tableSize/NUM_BUCKETS;  // ~ 1% of the hash
+		int htIndex = 0;
+		int dataIndex = 0;
+		int valid = 0;
+		int empty = 0;
+		while (htIndex < tableSize ) {
+			for (int i = 0; (i < chunk) && (htIndex< tableSize); i++ ) {
+				if (hash.contains(htIndex)) {
+					valid++;
+				}
+				else
+					empty++;
+				htIndex++;
+			}
+			hashAnalysis[hashType][loop][dataIndex][VALID] = valid;
+			hashAnalysis[hashType    ][loop][dataIndex][EMPTY] = empty;
+			if (htIndex != NUM_BUCKETS*chunk) {
+				dataIndex++;
+				valid = 0;
+				empty = 0;
+			}
 		}
 	}
 
